@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
 include("cmake/HunterGate.cmake")
-
 # package manager
 HunterGate(
         URL "https://github.com/cpp-pm/hunter/archive/v0.25.3.tar.gz"
@@ -10,9 +9,13 @@ HunterGate(
 project(engine_computer)
 
 # add package
-# add package to cmake
+# add boost package to cmake
 hunter_add_package(Boost COMPONENTS system)
 find_package(Boost CONFIG REQUIRED system)
+
+#add log packageto cmake
+hunter_add_package(spdlog)
+find_package(spdlog CONFIG REQUIRED)
 
 # add executable
 add_executable(engine_computer
@@ -22,4 +25,4 @@ add_executable(engine_computer
 if(MINGW)
     target_link_libraries(engine_computer PRIVATE ws2_32)
 endif()
-target_link_libraries(engine_computer PUBLIC Boost::boost Boost::system)
+target_link_libraries(engine_computer PUBLIC Boost::boost Boost::system spdlog::spdlog)
