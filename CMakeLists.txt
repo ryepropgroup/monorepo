@@ -17,7 +17,10 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-if(NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/boost/CMakeLists.txt")
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/boost/CMakeLists.txt"
+AND NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/spdlog/CMakeLists.txt"
+AND NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/yaml-cpp/CMakeLists.txt"
+)
     message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 endif()
 
@@ -26,10 +29,6 @@ endif()
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/yaml-cpp)
 add_subdirectory(vendor/boost EXCLUDE_FROM_ALL)
-
-find_package(Boost PATHS vendor/boost)
-find_package(spdlog PATHS vendor/spdlog)
-find_package(yaml-cpp PATHS vendor/yaml-cpp)
 
 # add executable
 add_executable(engine_computer
