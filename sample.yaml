@@ -1,0 +1,91 @@
+valves:
+  "V11_NO": "DIO0"
+  "V30": "DIO1"
+  "V12_NO": "DIO2"
+  "V31": "DIO3"
+  "V20": "DIO4"
+  "V32": "DIO5"
+  "V21": "DIO6"
+  "V33": "DIO7"
+  "V35_NO": "DIO8"
+  "V36": "DIO9"
+  "V34": "DIO10"
+  "V38_NO": "DIO11"
+  "V37": "DIO12"
+  "V23_NO": "DIO13"
+  "V10": "DIO14"
+  "V22": "DIO15"
+
+sensors:
+  - name: "P31"
+    port: "AIN0"
+    params:
+      "AIN0_RANGE": 10
+      "AIN0_NEGATIVE_CH": 1
+  - name: "P21"
+    port: "AIN2"
+    params:
+      "AIN2_RANGE": 10
+      "AIN2_NEGATIVE_CH": 3
+  - name: "P10"
+    port: "AIN4"
+    params:
+      "AIN4_RANGE": 10
+      "AIN4_NEGATIVE_CH": 5
+  - name: "P22"
+    port: "AIN11"
+    params:
+      "AIN11_RANGE": 10
+  - name: "P32"
+    port: "AIN3"
+    params:
+      "AIN3_RANGE": 10
+  - name: "T1"
+    port: "AIN7"
+    params:
+      "AIN7_EF_INDEX": 22
+      "AIN7_EF_CONFIG_B": 60052
+      "AIN7_EF_CONFIG_D": 1
+      "AIN7_EF_CONFIG_E": 0
+      "AIN7_EF_CONFIG_A": 1
+  - name: "T2"
+    port: "AIN9"
+    params:
+      "AIN9_EF_INDEX": 22
+      "AIN9_EF_CONFIG_B": 60052
+      "AIN9_EF_CONFIG_D": 1
+      "AIN9_EF_CONFIG_E": 0
+      "AIN9_EF_CONFIG_A": 1
+  - name: "PINJ"
+    port: "AIN4"
+    params:
+      "AIN4_RANGE": 10
+  - name: "LC"
+    port: "AIN0"
+    params:
+      "AIN0_NEGATIVE_CH": 1
+  - name: "INJ1"
+    port: "AIN10"
+    params:
+      "AIN10_RANGE": 0.1
+      "AIN10_NEGATIVE_CH": 11
+  - name: "INJ2"
+    port: "AIN8"
+    params:
+      "AIN8_RANGE": 0.1
+      "AIN8_NEGATIVE_CH": 9
+  - name: "IGN"
+    port: "AIN6"
+    params:
+      "AIN6_RANGE": 0.1
+      "AIN6_NEGATIVE_CH": 7
+  - name: "P20"
+    port: "AIN3"
+    params:
+      "AIN3_RANGE": 10
+  - name: "P30"
+    port: "AIN2"
+    params:
+      "AIN8_RANGE": 10
+
+sequences:
