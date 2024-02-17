@@ -30,12 +30,22 @@ add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/yaml-cpp)
 add_subdirectory(vendor/boost EXCLUDE_FROM_ALL)
 
+include_directories(lib)
+if (APPLE)
+    message("SETTING Apple Library Paths")
+    set(LJM "/usr/local/lib/libLabJackM.dylib")
+elseif (UNIX)
+    message("SETTING Unix/Linux Library Paths!")
+    set(LJM "/usr/local/lib/libLabJackM.so")
+endif ()
+
 # add executable
 add_executable(engine_computer
-        main.cpp)
+        src/main.cpp src/labjack_manager.cpp src/config_parser.cpp src/util.cpp)
+
 
 # link libs
 if(MINGW)
     target_link_libraries(engine_computer PRIVATE ws2_32)
 endif()
-target_link_libraries(engine_computer PUBLIC Boost::system Boost::asio spdlog::spdlog yaml-cpp::yaml-cpp)
+target_link_libraries(engine_computer PUBLIC ${LJM} Boost::system Boost::asio spdlog::spdlog yaml-cpp::yaml-cpp)
