@@ -2,7 +2,8 @@
 #include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
-#include "include/labjack_manager.hpp"
+#include "include/labjack.hpp"
+#include "include/config_parser.hpp"
 //
 // Created by danie on 2023-12-14.
 //
@@ -17,6 +18,11 @@ int main() {
     out << YAML::EndSeq;
     std::cout<< out.c_str()<<std::endl;
 
-    mach::LabJack slowJack("SlowJack");
-    mach::LabJack fastJack("FastJack");
+
+    // One LabJack for now...
+    mach::LabJack labJack("LabJack");
+    mach::parser::parseConfig(labJack);
+    for (int i = 0; i < labJack.devices.size(); i++) {
+        labJack.devices[i]->print();
+    }
 }
