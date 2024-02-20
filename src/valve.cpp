@@ -3,12 +3,12 @@
 #include <string>
 #include <iostream>
 
-mach::Valve::Valve(std::string name, std::string port) : mach::LJDevice::LJDevice(name, port) {
-    this->state = false;
+mach::Valve::Valve(std::string name, std::string port) : mach::LJDevice<bool>::LJDevice(name, port) {
+    this->value = false;
 }
 
 bool mach::Valve::isOpen() {
-    return state;
+    return getValue();
 }
 
 void mach::Valve::open() {
@@ -20,5 +20,5 @@ void mach::Valve::close() {
 }
 
 void mach::Valve::print() {
-    std::cout << "Valve: " << name << ", Port: " << port << ", State: " << state << std::endl;
+    std::cout << "Valve: " << name << ", Port: " << port << ", State: " << isOpen() << std::endl;
 }

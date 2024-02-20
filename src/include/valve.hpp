@@ -4,7 +4,7 @@
 
 namespace mach {
 
-class Valve : public LJDevice {
+class Valve : public LJDevice<bool> {
     public:
         Valve(std::string name, std::string port);
 
@@ -13,9 +13,6 @@ class Valve : public LJDevice {
         void close();
 
         void print() override;
-    
-    private:
-        bool state;
 };
 
 }

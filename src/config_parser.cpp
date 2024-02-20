@@ -15,8 +15,7 @@ void parseConfig(mach::LabJack labJack) {
     for (YAML::const_iterator it = valves.begin(); it != valves.end(); it++) {
         std::string name = it->first.as<std::string>();
         std::string port = it->second.as<std::string>();
-
-        labJack.addDevice(std::make_shared<mach::Valve>(name, port));
+        labJack.addDevice(std::move(std::make_shared<mach::Valve>(name, port)));
     }
 
     YAML::Node sensors = config["sensors"];
@@ -31,7 +30,7 @@ void parseConfig(mach::LabJack labJack) {
             settingNames.push_back(it->first.as<std::string>());
             settingValues.push_back(it->second.as<double>());
         }
-        labJack.addDevice(std::make_shared<mach::Sensor>(name, port, settingNames, settingValues));
+        labJack.addDevice(std::move(std::make_shared<mach::Sensor>(name, port, settingNames, settingValues)));
     }
 }
 
