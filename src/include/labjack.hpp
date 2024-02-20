@@ -15,6 +15,8 @@ class LabJack {
 
         LabJack(std::string labjackName);
         ~LabJack();
+        LabJack(const LabJack&) = delete; // No copying! >:(
+        LabJack& operator=(const LabJack&) = delete;
 
         int getHandle();
         void addDevice(std::shared_ptr<LJDevice<double>> floatDevice);
@@ -32,7 +34,7 @@ class LJDevice {
         LJDevice(std::string name, std::string port);
         
 
-        virtual void initialize(LabJack labjack);
+        virtual void initialize(LabJack& labjack);
         virtual T getValue();
         virtual void print() = 0;
 

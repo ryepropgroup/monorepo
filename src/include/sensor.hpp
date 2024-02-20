@@ -13,7 +13,7 @@ class Sensor : public LJDevice<double> {
         Sensor(std::string name, std::string pin, std::vector<std::string> settingNames, 
                std::vector<double> settingValues);
 
-        void initialize(LabJack labjack) override;
+        void initialize(LabJack& labjack) override;
         void print() override;
 };
 

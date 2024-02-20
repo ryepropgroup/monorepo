@@ -22,12 +22,12 @@ int mach::LabJack::getHandle() {
 }
 
 void mach::LabJack::addDevice(std::shared_ptr<LJDevice<double>> floatDevice) {
-    floatDevices.emplace_back(std::move(floatDevice));
+    floatDevices.emplace_back(floatDevice);
     floatDevice->initialize(*this);
 }
 
 void mach::LabJack::addDevice(std::shared_ptr<LJDevice<bool>> boolDevice) {
-    boolDevices.emplace_back(std::move(boolDevice));
+    boolDevices.emplace_back(boolDevice);
     boolDevice->initialize(*this);
 }
 
@@ -46,7 +46,7 @@ mach::LJDevice<T>::LJDevice(std::string name, std::string port) {
 }
 
 template <typename T>
-void mach::LJDevice<T>::initialize(mach::LabJack labjack) {
+void mach::LJDevice<T>::initialize(mach::LabJack& labjack) {
     this->labjack = &labjack;
 }
 

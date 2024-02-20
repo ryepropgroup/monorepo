@@ -15,7 +15,7 @@ mach::Sensor::Sensor(std::string name, std::string pin, std::vector<std::string>
     this->value = 0.0;
 }
 
-void mach::Sensor::initialize(mach::LabJack labjack) {
+void mach::Sensor::initialize(mach::LabJack& labjack) {
     try {
         int err, errorAddress = -2; // INITIAL_ERR_ADDRESS;
         err = LJM_eWriteNames(labjack.getHandle(), int(settingNames.size()),

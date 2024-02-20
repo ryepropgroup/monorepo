@@ -3,5 +3,5 @@
 
 namespace mach::parser {
 
-    void parseConfig(LabJack labJack);
+    void parseConfig(LabJack &labJack);
 }

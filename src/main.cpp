@@ -22,12 +22,12 @@ int main() {
     // One LabJack for now...
     mach::LabJack labJack("LabJack");
     mach::parser::parseConfig(labJack);
-    std::cout << "Valves: " << std::endl;
-    for (auto &device : labJack.boolDevices) {
+    std::cout << "Valves: " << labJack.boolDevices.size() << std::endl;
+    for (auto device : labJack.boolDevices) {
         device->print();
     }
-    std::cout << "Sensors: " << std::endl;
-    for (auto &device : labJack.floatDevices) {
+    std::cout << "Sensors: " << labJack.floatDevices.size() << std::endl;
+    for (auto device : labJack.floatDevices) {
         device->print();
     }
 }
