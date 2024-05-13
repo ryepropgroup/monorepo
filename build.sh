@@ -1,3 +1,4 @@
+#!/bin/bash
 echo ********** MACH: Configuring the build with CMake **********
 "cmake" --preset=linux
 
