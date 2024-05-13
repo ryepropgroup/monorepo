@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 include(FetchContent)
 project(engine_computer)
+
 set (CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED COMPONENTS exception)
@@ -27,6 +28,16 @@ if (NOT EXISTS ${LJM})
 endif()
 
 include_directories(${LJM_FOLDER})
+
+# set windows version macro for boost::asio
+macro(get_win_hex outvar)
+  string(REGEX MATCH "^([0-9]+)\\.([0-9]+)" ${outvar} ${CMAKE_SYSTEM_VERSION})
+  math(EXPR ${outvar} "(${CMAKE_MATCH_1} << 8) + ${CMAKE_MATCH_2}" OUTPUT_FORMAT HEXADECIMAL)
+endmacro()
+if(WIN32)
+  get_win_hex(winver)
+  add_compile_definitions(_WIN32_WINNT=${winver})
+endif()
 
 # add executable
 add_executable(engine_computer

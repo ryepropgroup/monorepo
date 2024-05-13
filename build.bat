@@ -17,7 +17,7 @@ if not defined DevEnvDir (
 )
 
 echo ********** MACH: Configuring the build with CMake **********
-"cmake" --preset=windows
+cmake --preset=windows
 
 echo ********** MACH: Building the project **********
-"cmake" --build build
+cmake --build build
