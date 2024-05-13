@@ -1,6 +1,7 @@
 {
   "dependencies": [
-    "boost",
+    "boost-asio",
+    "boost-exception",
     "yaml-cpp",
     "spdlog"
   ]
