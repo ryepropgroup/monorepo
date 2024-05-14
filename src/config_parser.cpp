@@ -4,7 +4,7 @@
 #include "include/sensor.hpp"
 #include <memory>
 
-#define CONFIG_FILE "config.yml"
+#define CONFIG_FILE "../config.yml"
 
 namespace mach::parser {
 

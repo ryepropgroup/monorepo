@@ -2,50 +2,53 @@ cmake_minimum_required(VERSION 3.6)
 include(FetchContent)
 project(engine_computer)
 
-find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
-    # Update submodules as needed
-    option(GIT_SUBMODULE "Check submodules during build" ON)
-    if(GIT_SUBMODULE)
-        message(STATUS "Submodule update")
-        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE GIT_SUBMOD_RESULT)
-        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif()
-    endif()
-endif()
+set (CMAKE_CXX_STANDARD 17)
 
-if(NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/boost/CMakeLists.txt"
-AND NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/spdlog/CMakeLists.txt"
-AND NOT EXISTS "${PROJECT_SOURCE_DIR}/vendor/yaml-cpp/CMakeLists.txt"
-)
-    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-endif()
-
-# add package
-# add boost package to cmake
-add_subdirectory(vendor/spdlog)
-add_subdirectory(vendor/yaml-cpp)
-add_subdirectory(vendor/boost EXCLUDE_FROM_ALL)
-include_directories(vendor/labjack)
+find_package(Boost REQUIRED COMPONENTS exception)
+find_package(Boost REQUIRED COMPONENTS asio)
+find_package(spdlog CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 if (APPLE)
-    message("SETTING Apple Library Paths")
-    set(LJM "/usr/local/lib/libLabJackM.dylib")
+    message("CMake: SETTING Apple Library Paths")
+    set(LJM_FOLDER "/usr/local/lib")
+    set(LJM "${LJM_FOLDER}/libLabJackM.dylib")
 elseif (UNIX)
-    message("SETTING Unix/Linux Library Paths!")
-    set(LJM "/usr/local/lib/libLabJackM.so")
-endif ()
+    message("CMake: SETTING Unix/Linux Library Paths!")
+    set(LJM_FOLDER "/usr/local/lib")
+    set(LJM "${LJM_FOLDER}/libLabJackM.so")
+elseif (WIN32)
+    message("CMake: SETTING Windows Library Paths!")
+    set(LJM_FOLDER "C:/Program Files (x86)/LabJack/Drivers")
+    set(LJM "${LJM_FOLDER}/LabJackM.lib")
+endif () 
+
+if (NOT EXISTS ${LJM})
+    message(FATAL_ERROR "FATAL: LJM installation not found!")
+endif()
+
+include_directories(${LJM_FOLDER})
+
+# set windows version macro for boost::asio
+macro(get_win_hex outvar)
+  string(REGEX MATCH "^([0-9]+)\\.([0-9]+)" ${outvar} ${CMAKE_SYSTEM_VERSION})
+  math(EXPR ${outvar} "(${CMAKE_MATCH_1} << 8) + ${CMAKE_MATCH_2}" OUTPUT_FORMAT HEXADECIMAL)
+endmacro()
+if(WIN32)
+  get_win_hex(winver)
+  add_compile_definitions(_WIN32_WINNT=${winver})
+endif()
 
 # add executable
-add_executable(engine_computer
-        src/main.cpp src/labjack.cpp src/config_parser.cpp src/util.cpp src/valve.cpp src/sensor.cpp)
-
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+else()
+    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+endif()
+add_executable(engine_computer ${SOURCES})
 
 # link libs
-if(MINGW)
-    target_link_libraries(engine_computer PRIVATE ws2_32)
+if(MINGW) 
+    target_link_libraries(engine_computer PRIVATE ws2_32) 
 endif()
-target_link_libraries(engine_computer PUBLIC ${LJM} Boost::system Boost::asio spdlog::spdlog yaml-cpp::yaml-cpp)
+target_link_libraries(engine_computer PUBLIC ${LJM} Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
