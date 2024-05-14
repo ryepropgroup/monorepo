@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
-#include "labjack.hpp"
+#include "../labjack.hpp"
 
 namespace mach {
 
-class Valve : public LJDevice<bool> {
+class Valve : public Device<bool> {
     public:
         Valve(std::string name, std::string port);
 
@@ -15,4 +15,4 @@ class Valve : public LJDevice<bool> {
         void print() override;
 };
 
-}
+} // namespace mach

@@ -1,14 +1,20 @@
-#include <yaml-cpp/yaml.h>
-#include "include/labjack.hpp"
-#include "include/valve.hpp"
-#include "include/sensor.hpp"
 #include <memory>
+#include <regex>
+#include <yaml-cpp/yaml.h>
+#include <filesystem>
+#include "include/labjack.hpp"
+#include "include/device/valve.hpp"
+#include "include/device/sensor.hpp"
+#include "include/config_mapping.hpp"
 
-#define CONFIG_FILE "../config.yml"
+#define CONFIG_FILE "../config/config.yml"
 
-namespace mach::parser {
+namespace mach {
 
 void parseConfig(mach::LabJack &labJack) {
+    if (!std::filesystem::exists(CONFIG_FILE)) {
+        throw std::runtime_error("Config file not found!");
+    }
     YAML::Node config = YAML::LoadFile(CONFIG_FILE);
     
     YAML::Node valves = config["valves"];
@@ -23,15 +29,16 @@ void parseConfig(mach::LabJack &labJack) {
         const YAML::Node sensor = *it;
         std::string name = sensor["name"].as<std::string>();
         std::string port = sensor["port"].as<std::string>();
-        std::vector<std::string> settingNames;
-        std::vector<double> settingValues;
-        YAML::Node settings = sensor["settings"];
-        for (YAML::const_iterator it = settings.begin(); it != settings.end(); it++) {
-            settingNames.push_back(it->first.as<std::string>());
-            settingValues.push_back(it->second.as<double>());
+        YAML::Node settingsNode = sensor["settings"];
+        std::vector<std::pair<std::string, std::string>> config;
+        for (YAML::const_iterator it = settingsNode.begin(); it != settingsNode.end(); it++) {
+            std::string configName = it->first.as<std::string>();
+            std::string configValue = it->second.as<std::string>();
+            config.emplace_back(configName, configValue);
         }
-        labJack.addDevice(std::make_shared<mach::Sensor>(name, port, settingNames, settingValues));
+        std::pair<std::vector<std::string>, std::vector<double>> settings = convertConfigToLabjack(config, port);
+        labJack.addDevice(std::make_shared<mach::Sensor>(name, port, settings.first, settings.second));
     }
 }
 
-}
+} // namespace mach

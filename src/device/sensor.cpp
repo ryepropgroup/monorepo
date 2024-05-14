@@ -1,6 +1,5 @@
-#include "include/labjack.hpp"
-#include "include/sensor.hpp"
-#include "include/util.hpp"
+#include "../include/device/sensor.hpp"
+#include "../include/util.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -9,7 +8,7 @@
 #include <boost/exception/diagnostic_information.hpp>
 
 mach::Sensor::Sensor(std::string name, std::string pin, std::vector<std::string> settingNames, 
-                     std::vector<double> settingValues) : mach::LJDevice<double>::LJDevice(name, pin) {
+                     std::vector<double> settingValues) : mach::Device<double>::Device(name, pin) {
     this->settingNames = settingNames;
     this->settingValues = settingValues;
     this->value = 0.0;
@@ -18,7 +17,8 @@ mach::Sensor::Sensor(std::string name, std::string pin, std::vector<std::string>
 void mach::Sensor::initialize(mach::LabJack& labjack) {
     try {
         int err, errorAddress = -2; // INITIAL_ERR_ADDRESS;
-        err = LJM_eWriteNames(labjack.getHandle(), int(settingNames.size()),
+        err = LJM_eWriteNames(labjack.getHandle(), 
+            int(settingNames.size()),
             util::vectorToChar(settingNames),
             util::vectorToDouble(settingValues),
             &errorAddress

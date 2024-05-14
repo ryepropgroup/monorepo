@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "labjack.hpp"
+#include "../labjack.hpp"
 
 namespace mach {
 
-class Sensor : public LJDevice<double> {
+class Sensor : public Device<double> {
     public:
         std::vector<std::string> settingNames;
         std::vector<double> settingValues;
@@ -17,4 +17,4 @@ class Sensor : public LJDevice<double> {
         void print() override;
 };
 
-}
+} // namespace mach

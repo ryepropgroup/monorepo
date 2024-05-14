@@ -1,5 +1,23 @@
 # MACH Engine Computer
 
+## Configuration
+
+`config/config.yml`
+```yaml
+sensors:
+    - name: "name"
+      port: "AIN#"
+      settings:
+        NAME: VALUE # see settings below
+```
+
+### Sensor Settings
+`RANGE: #.#`: The max voltage (float value) of the sensor plugged into this port (ex. 10.0). Corresponds to the [AIN#_RANGE setting](https://support.labjack.com/docs/14-0-analog-inputs-t-series-datasheet#id-14.0AnalogInputs[T-SeriesDatasheet]-Range/Gain-T7/T8) on LabJack.
+
+`NEGATIVE_PORT: #`: If this sensor is making a differential reading (using a second AIN as a reference point), this is the port number corresponding of the negative channel (ex. 1 for AIN1). Corresponds to the [AIN#_NEGATIVE_CH setting](https://support.labjack.com/docs/14-0-analog-inputs-t-series-datasheet#id-14.0AnalogInputs[T-SeriesDatasheet]-Single-endedorDifferential-T7Only) on LabJack.
+
+`THERMOCOUPLE_TYPE: E, J, K, R, T, S, N, B, or C`: Sets up this sensor as a type X thermocouple, using LabJack's extended features. Defaults to using the on-board CJC sensor, in celsius. Corresponds to the [AIN#_EF_INDEX/AIN#_EF_CONFIG_X settings](https://support.labjack.com/docs/14-1-1-thermocouple-t7-t8-t-series-datasheet) on LabJack.
+
 ## Build Instructions - Windows
 1. Download the [software and drivers for LabJack here](https://support.labjack.com/docs/ljm-software-installer-downloads-t4-t7-t8-digit). The only required component is [LabJackM](https://support.labjack.com/docs/ljm-library-overview), the driver and library for communication with LabJack devices.
 1. The [vcpkg package manager](https://learn.microsoft.com/en-us/vcpkg/get_started/get-started) is included as a submodule in this project. Run `bootstrap.bat` to download the submodule and set it up.

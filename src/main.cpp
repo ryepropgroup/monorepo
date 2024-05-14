@@ -18,10 +18,11 @@ int main() {
     out << YAML::EndSeq;
     std::cout<< out.c_str()<<std::endl;
 
-
-    // One LabJack for now...
+    // One LabJack for now.
     mach::LabJack labJack("LabJack");
-    mach::parser::parseConfig(labJack);
+    mach::parseConfig(labJack);
+
+    // Print all devices for debug.
     std::cout << "Valves: " << labJack.boolDevices.size() << std::endl;
     for (auto device : labJack.boolDevices) {
         device->print();

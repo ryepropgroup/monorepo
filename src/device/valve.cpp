@@ -1,9 +1,8 @@
-#include "include/labjack.hpp"
-#include "include/valve.hpp"
+#include "../include/device/valve.hpp"
 #include <string>
 #include <iostream>
 
-mach::Valve::Valve(std::string name, std::string port) : mach::LJDevice<bool>::LJDevice(name, port) {
+mach::Valve::Valve(std::string name, std::string port) : mach::Device<bool>::Device(name, port) {
     this->value = false;
 }
 

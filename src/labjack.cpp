@@ -1,8 +1,8 @@
-#include "include/labjack.hpp"
-#include "include/util.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
+#include "include/labjack.hpp"
+#include "include/util.hpp"
 #include "LabJackM.h"
 #include "../vendor/labjack/LJM_Utilities.h"
 
@@ -21,12 +21,12 @@ int mach::LabJack::getHandle() {
     return handle;
 }
 
-void mach::LabJack::addDevice(std::shared_ptr<LJDevice<double>> floatDevice) {
+void mach::LabJack::addDevice(std::shared_ptr<Device<double>> floatDevice) {
     floatDevices.emplace_back(floatDevice);
     floatDevice->initialize(*this);
 }
 
-void mach::LabJack::addDevice(std::shared_ptr<LJDevice<bool>> boolDevice) {
+void mach::LabJack::addDevice(std::shared_ptr<Device<bool>> boolDevice) {
     boolDevices.emplace_back(boolDevice);
     boolDevice->initialize(*this);
 }
@@ -38,22 +38,3 @@ void mach::LabJack::setHigh(std::string port) {
 void mach::LabJack::setLow(std::string port) {
     LJM_eWriteName(handle, port.c_str(), 0);
 }
-
-template <typename T>
-mach::LJDevice<T>::LJDevice(std::string name, std::string port) {
-    this->name = name;
-    this->port = port;
-}
-
-template <typename T>
-void mach::LJDevice<T>::initialize(mach::LabJack& labjack) {
-    this->labjack = &labjack;
-}
-
-template <typename T>
-T mach::LJDevice<T>::getValue() {
-    return value;
-}
-
-template class mach::LJDevice<double>;
-template class mach::LJDevice<bool>;

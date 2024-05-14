@@ -1,7 +1,8 @@
 #pragma once
 #include "labjack.hpp"
 
-namespace mach::parser {
+namespace mach {
 
     void parseConfig(LabJack &labJack);
-}
+
+} // namespace mach
