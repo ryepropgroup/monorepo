@@ -40,10 +40,12 @@ if(WIN32)
 endif()
 
 # add executable
-add_executable(engine_computer
-        src/main.cpp src/labjack.cpp 
-        src/config_parser.cpp src/util.cpp 
-        src/valve.cpp src/sensor.cpp)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+else()
+    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+endif()
+add_executable(engine_computer ${SOURCES})
 
 # link libs
 if(MINGW) 
