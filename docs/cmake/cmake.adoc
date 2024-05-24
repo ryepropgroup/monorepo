@@ -1,0 +1,4 @@
+= CMake Introduction
+Mach Software Team
+v0.0, 2024-05-24
+:docinfo: shared
