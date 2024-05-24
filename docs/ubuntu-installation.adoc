@@ -1,6 +1,6 @@
 = Ubuntu Installation Guide 
 MACH Software Team
-v1.0, 2024-05-23
+v1.5, 2024-05-23
 :docinfo: shared
 
 == Introduction
@@ -19,15 +19,16 @@ You can try any of the options yourself, but for this case specifically, select 
 
 image::ubuntu-installation-images/grub-boot.png[Boot Screen]
 
+<<<
 
 == Step 3: Choosing Language & Keyboard Layout
 Now that you've booted into the disk image, you should see the install wizard.
-
 Please follow the sequence of images, if you encounter a screen not shown, skip past it.
 
 image::ubuntu-installation-images/language-selection.png[Install Wizard Screen]
 image::ubuntu-installation-images/keyboard-selection.png[Keyboard Settings Screen]
 
+<<<
 
 == Step 4: Installation Settings
 
@@ -48,18 +49,21 @@ Your first step is configuring your network, I usually use ethernet so I don't h
 
 image::ubuntu-installation-images/network-selection.png[Select Network]
 
+<<<
+
 === Part 2: Try or Install
 You will face the Try or Install Ubuntu screen, and this is where you should hit *Install Ubuntu*.
 
 image::ubuntu-installation-images/try-or-install-selection.png[Install Ubuntu Selection]
 
+<<<
 
 === Part 3: Application Selection
-If you need fancy extra applications (I usually prefer to install those myself), click *Extended Selection*. Otherwise, click *Default Selection*.
+If you need fancy extra applications click *Extended Selection*. Otherwise, click *Default Selection*.
 
 image::ubuntu-installation-images/apps-selection.png[Default Selection]
 
-
+<<<
 
 === Part 4: Proprietary Software Selection
 I would check all the options here, as video formats and drivers are not something most people want to troubleshoot themselves, and this small step saves a lot of future headaches.
@@ -67,6 +71,9 @@ I would check all the options here, as video formats and drivers are not somethi
 image::ubuntu-installation-images/proprietary-sfotware-selection.png[CheckAll]
 
 Now you just wait for the changes to be applied!
+
+<<<
+
 
 == Step 5: Partitioning
 
@@ -78,6 +85,8 @@ However, this guide is about installing Ubuntu on its own, and so we do Automati
 Do not select any advanced features (i.e encryption) for MACH computers, as we will be unable to read the filesystem should any error occur at any time.
 
 image::ubuntu-installation-images/automatic-manual-partitioning-selection.png[Automatic Partitioning]
+
+<<<
 
 == Step 6: Creating a User Account
 
@@ -96,10 +105,14 @@ image::ubuntu-installation-images/automatic-manual-partitioning-selection.png[Au
 
 image::ubuntu-installation-images/user-account-setup.png[User Account Setup]
 
+<<<
+
 == Step 7: Geographic Location and TimeZone
 This should be auto-selected, but if not you can manually select it.
 
 image::ubuntu-installation-images/location-timezone.png[Location Timezone]
+
+<<<
 
 == Step 8: Installation
 
@@ -107,11 +120,15 @@ Your system should be ready to install! Hit *Install* when you're ready to proce
 
 image::ubuntu-installation-images/pre-install-screen.png[Pre-Install Screen]
 
+<<<
+
 === Part 1: Progress
 
 This might take a while depending on your hardware, so sit tight and relax while Ubuntu installs itself to your system.
 
 image::ubuntu-installation-images/progress-install-screen.png[Progress Screen]
+
+<<<
 
 === Part 2: Completion
 
