@@ -1,0 +1,47 @@
+= Ubuntu Installation Guide 
+:author: MACH Software Team
+:date: 2024-05-23
+:revision: 0.1
+
+== Introduction
+
+== Step 1: Booting from USB
+When booting from USB, make sure to have a full ISO image on a reliable (preferably fast) USB drive.
+
+Enter your system BIOS, and select boot from USB (this process differs between hardware manufacturers).
+
+Once your system restarts and turns on, you should be left at this screen.
+
+image::ubuntu-installation-images/grub-boot.png[Boot Screen]
+
+== Step 2: Selecting Installation Option
+
+== Step 3: Choosing Language & Keyboard Layout
+
+== Step 4: Installation Settings
+
+== Step 5: Partitioning
+
+=== Part 1: Manual vs. Automatic Partitioning
+
+=== Part 2: Confirming Partitioning Changes
+
+== Step 7: Geographic Location and TimeZone
+
+== Step 8: Creating a User Account
+
+== Step 9: Installation
+
+=== Part 1: Progress
+
+=== Part 2: Completion
+
+== Conclusion
+
+[horizontal]
+:cols: 2
+
+[align="center"]
+Author : {author}
+Revision Date: {date}
+Revision Number: {revision}
