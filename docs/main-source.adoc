@@ -5,6 +5,7 @@ Mach Software Team
 :source-highlighter: highlightjs
 :toc: auto
 :docinfo: shared
+:toc-title: Documentation Topics
 
 
 include::code/proto.adoc[]
