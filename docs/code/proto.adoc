@@ -1,0 +1,22 @@
+== Protocol Buffers
+
+=== What Are Protocol Buffers?
+Protocol Buffers, commonly known as `protobufs` are a serialization format for structured data. A high-performance alternative to XML and JSON, they are simple, efficient, and can fit almost any data model.
+
+Application Programming Interfaces (APIs) are commonly implemented in JSON and XML over HTTP/1.1, which was standardized in 1997. Protobuf uses the latest revision of the standard (HTTP/2), which was standardized in 2015. HTTP/2 offers performance improvements and is supported in almost all browsers. 
+
+Protocol Buffers are serialized into binary directly, which makes them more compact and efficient than regular binary-encoded formats. Because it is represented in binary, protobuf files are used to generate these binary representations, and are themselves human-readable.
+
+Protobuf supports backwards-compatibility, forwards-compatibility, and any sort of change in schema requirements. New fields can be added without breaking existing systems that rely on an old schema version.
+
+=== Example and Use
+.Example Protobuf File:
+[source, Protocol Buffers]
+syntax = "proto3";
+message User {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+}
+
+Protocol Buffer schemas can be compiled into source files for a variety of languages, which makes it extremely applicable to cross-platform and cross-language projects.

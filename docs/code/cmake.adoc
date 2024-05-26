@@ -1,0 +1,29 @@
+== CMake Configuration
+
+```
+MyProject/
+├── CMakeLists.txt
+├── cpp_project/
+│   ├── CMakeLists.txt
+│   └── main.cpp
+├── go_project/
+│   ├── CMakeLists.txt
+│   └── main.go
+└── proto_files/
+    ├── CMakeLists.txt
+    └── example.proto
+```
+
+=== Explanation
+Each part of the monorepo contains it's own CMakeLists.txt file. This file allows the project to be built automatically with various configuration options, which means:
+
+    - Project-specific tools and configurations are located close to the source code
+    - Each project can be built separately without having to build the entire monorepo
+
+=== What is CMake?
+
+CMake is a cross-platform tool for building, testing and packaging software. It has the ability to generate native build scripts for many different platforms and Operating Systems. It can compile to Unix Makefiles, Microsoft Visual Studio Project Files, and a variety of other formats. This allows our software to be built cross-platform with ease.
+
+=== Compiling a CMake project
+Simply make a directory called *build*, enter it and then call CMake and the central CMakeLists.txt file by doing `cmake ..` to generate the build files.
+Once the build files are generated, run `cmake --build .`
