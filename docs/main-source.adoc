@@ -4,6 +4,7 @@ Mach Software Team
 :docinfo: shared
 :source-highlighter: highlightjs
 :toc: auto
+:docinfo: shared
 
 
 include::code/proto.adoc[]
