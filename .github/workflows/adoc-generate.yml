@@ -18,4 +18,4 @@ jobs:
     - name: Commit and Push README
       uses: EndBug/add-and-commit@v9
       with:
-        add: README.adoc
+        add: ./docs/README.adoc

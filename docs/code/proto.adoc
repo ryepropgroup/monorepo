@@ -9,6 +9,7 @@ Protocol Buffers are serialized into binary directly, which makes them more comp
 
 Protobuf supports backwards-compatibility, forwards-compatibility, and any sort of change in schema requirements. New fields can be added without breaking existing systems that rely on an old schema version.
 
+=== Example and Use
 .Example Protobuf File:
 [source, Protocol Buffers]
 syntax = "proto3";
