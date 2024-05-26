@@ -1,0 +1,10 @@
+= General Software Documentation
+Mach Software Team
+:doctype: book
+:docinfo: shared
+:source-highlighter: highlightjs
+:toc: auto
+
+include::code/proto.adoc[]
+
+include::code/cmake.adoc[]

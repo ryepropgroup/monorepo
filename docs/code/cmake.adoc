@@ -1,7 +1,4 @@
-= CMake Configuration
-Mach Software Team
-v1.0, 2024-05-24
-:docinfo: shared
+== CMake Configuration
 
 ```
 MyProject/
@@ -17,13 +14,13 @@ MyProject/
     └── example.proto
 ```
 
-== Explanation
+=== Explanation
 Each part of the monorepo contains it's own CMakeLists.txt file. This file allows the project to be built automatically with various configuration options, which means:
 
     - Project-specific tools and configurations are located close to the source code
     - Each project can be built separately without having to build the entire monorepo
 
-== What is CMake?
+=== What is CMake?
 
 CMake is a cross-platform tool for building, testing and packaging software. It has the ability to generate native build scripts for many different platforms and Operating Systems. It can compile to Unix Makefiles, Microsoft Visual Studio Project Files, and a variety of other formats. This allows our software to be built cross-platform with ease.
 
