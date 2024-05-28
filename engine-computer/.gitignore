@@ -1,0 +1,10 @@
+cmake-build-*/
+build/
+.idea
+.vscode
+CMakeFiles
+.vs
+vcpkg_installed/
+out/
+CMakeCache.txt
+*.log
