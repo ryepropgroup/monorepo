@@ -4,7 +4,7 @@
 #include "include/labjack.hpp"
 #include "include/util.hpp"
 #include "LabJackM.h"
-#include "../../vendor/labjack/LJM_Utilities.h"
+#include "../vendor/labjack/LJM_Utilities.h"
 
 mach::LabJack::LabJack(std::string labjackName) {
     int err = INITIAL_ERR_ADDRESS;

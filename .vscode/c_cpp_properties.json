@@ -13,7 +13,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/vendor/**",
-                "${workspaceFolder}/build/vcpkg_installed/x86-windows/include/**"
+                "${workspaceFolder}/engine-computer/build/vcpkg_installed/x86-windows/include/**"
             ],
             "defines": ["_WIN32"],
             "cppStandard": "c++20",
