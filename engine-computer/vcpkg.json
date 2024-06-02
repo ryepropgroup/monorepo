@@ -4,5 +4,28 @@
     "boost-exception",
     "yaml-cpp",
     "spdlog"
+  ],
+  "overrides": [
+    {"name":"boost-core", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-describe", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-unordered", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-variant2", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-intrusive", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-filesystem", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-multi-index", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-serialization", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-tokenizer", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-container", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-program-options", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-nowide", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-algorithm", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-functional", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-optional", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-signals2", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-asio", "version": "1.85.0", "port-version": 2},
+    {"name":"boost-ptr-container", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-property-tree", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-static-string", "version": "1.85.0", "port-version": 1},
+    {"name":"boost-random", "version": "1.85.0", "port-version": 1}
   ]
 }
