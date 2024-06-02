@@ -28,6 +28,7 @@ if (NOT EXISTS ${LJM})
 endif()
 
 include_directories(${LJM_FOLDER})
+include_directories(vendor/labjack)
 
 # set windows version macro for boost::asio
 macro(get_win_hex outvar)
@@ -51,4 +52,4 @@ add_executable(engine_computer ${SOURCES})
 if(MINGW) 
     target_link_libraries(engine_computer PRIVATE ws2_32) 
 endif()
-target_link_libraries(engine_computer PUBLIC ${LJM} Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
+target_link_libraries(engine_computer PRIVATE ${LJM} Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)

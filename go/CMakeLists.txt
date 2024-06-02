@@ -5,12 +5,12 @@ project(protoServer)
 set(GO_MAIN_FILE src/cmd/protoServer.go)
 
 # Ensure the GO_OUTPUT_DIR variable is set
-if (NOT DEFINED GO_OUTPUT_DIR)
-    message(FATAL_ERROR "GO_OUTPUT_DIR is not set. Please set it in the parent CMakeLists.txt.")
+if (NOT DEFINED OUTPUT_DIR)
+    message(FATAL_ERROR "OUTPUT_DIR is not set. Please set it in the parent CMakeLists.txt.")
 endif()
 
 # Ensure the output directory exists
-file(MAKE_DIRECTORY ${GO_OUTPUT_DIR})
+file(MAKE_DIRECTORY ${OUTPUT_DIR})
 
 
 # Command to build the Go project
