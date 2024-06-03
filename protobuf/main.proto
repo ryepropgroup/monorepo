@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "messages";
+
+service Main {
+    rpc SendSensorData (SensorData) returns (Response) {}
+    rpc CommandStream (stream ClientCommand) returns (stream ServerCommand) {}
+    // Ping
+    
+}
