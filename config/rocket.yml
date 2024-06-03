@@ -1,0 +1,15 @@
+valves: 
+  V69: 1
+  V70: 2
+  V71: 3
+
+sensors:
+  - name: P69
+    pin: 4
+    settings:
+      RANGE: 10.0
+
+  - name: P70
+    pin: 5
+    settings:
+      RANGE: 10.0

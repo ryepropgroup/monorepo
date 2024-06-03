@@ -1,0 +1,9 @@
+steps:
+  - action: OPEN
+    item: DIO6
+
+  - action: SLEEP
+    duration: 5
+
+  - action: CLOSE
+    item: DIO6
