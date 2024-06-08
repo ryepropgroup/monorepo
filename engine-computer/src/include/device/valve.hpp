@@ -6,7 +6,9 @@ namespace mach {
 
 class Valve : public Device<bool> {
     public:
-        Valve(std::string name, std::string port);
+        Valve(DeviceType type, std::string name, std::string port) : Device(type, name, port) {
+            this->value = false;
+        }
 
         bool isOpen();
         void open();

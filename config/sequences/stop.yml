@@ -1,48 +1,48 @@
 steps:
   - action: CLOSE
-    item: V10
+    valve: V10
 
   - action: CLOSE
-    item: V21
+    valve: V21
 
   - action: CLOSE
-    item: V20
+    valve: V20
 
   - action: CLOSE
-    item: V30
+    valve: V30
 
   - action: CLOSE
-    item: V31
+    valve: V31
 
   - action: CLOSE
-    item: V32
+    valve: V32
 
   - action: CLOSE
-    item: V34
+    valve: V34
 
   - action: CLOSE
-    item: V36
+    valve: V36
 
   - action: CLOSE
-    item: V37
+    valve: V37
 
   - action: CLOSE
-    item: V11_NO
+    valve: V11_NO
 
   - action: CLOSE
-    item: V12_NO
+    valve: V12_NO
 
   - action: CLOSE
-    item: V22
+    valve: V22
 
   - action: CLOSE
-    item: V23_NO
+    valve: V23_NO
 
   - action: CLOSE
-    item: V33
+    valve: V33
 
   - action: CLOSE
-    item: V35_NO
+    valve: V35_NO
 
   - action: CLOSE
-    item: V38_NO
+    valve: V38_NO
