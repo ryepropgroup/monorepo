@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 #include <iostream>
 #include "include/labjack.hpp"
 #include "include/util.hpp"
@@ -19,16 +18,6 @@ mach::LabJack::~LabJack() {
 
 int mach::LabJack::getHandle() {
     return handle;
-}
-
-void mach::LabJack::addDevice(std::shared_ptr<Device<double>> floatDevice) {
-    floatDevices.emplace_back(floatDevice);
-    floatDevice->initialize(*this);
-}
-
-void mach::LabJack::addDevice(std::shared_ptr<Device<bool>> boolDevice) {
-    boolDevices.emplace_back(boolDevice);
-    boolDevice->initialize(*this);
 }
 
 void mach::LabJack::setHigh(std::string port) {

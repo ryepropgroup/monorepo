@@ -1,13 +1,7 @@
-#include "../include/device/device.hpp"
+#include "include/device/device.hpp"
 
 template <typename T>
-mach::Device<T>::Device(std::string name, std::string port) {
-    this->name = name;
-    this->port = port;
-}
-
-template <typename T>
-void mach::Device<T>::initialize(mach::LabJack& labjack) {
+void mach::Device<T>::setLabjack(mach::LabJack& labjack) {
     this->labjack = &labjack;
 }
 

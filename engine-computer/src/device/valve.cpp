@@ -1,10 +1,7 @@
-#include "../include/device/valve.hpp"
 #include <string>
-#include <iostream>
-
-mach::Valve::Valve(std::string name, std::string port) : mach::Device<bool>::Device(name, port) {
-    this->value = false;
-}
+#include <spdlog/spdlog.h>
+#include "include/device/valve.hpp"
+#include "include/device/device.hpp"
 
 bool mach::Valve::isOpen() {
     return getValue();
@@ -19,5 +16,5 @@ void mach::Valve::close() {
 }
 
 void mach::Valve::print() {
-    std::cout << "Valve: " << name << ", Port: " << port << ", State: " << isOpen() << std::endl;
+    spdlog::info("{}Valve: {}, Port: {}, State: {}", type == LABJACK ? "Labjack " : "", name, port, isOpen());
 }
