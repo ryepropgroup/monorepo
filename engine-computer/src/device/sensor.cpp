@@ -1,20 +1,15 @@
-#include "../include/device/sensor.hpp"
-#include "../include/util.hpp"
+#include "include/device/sensor.hpp"
+#include "include/util.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "LabJackM.h"
-// #include "../vendor/labjack/LJM_Utilities.h"
 #include <boost/exception/diagnostic_information.hpp>
+// #include "../vendor/labjack/LJM_Utilities.h"
 
-mach::Sensor::Sensor(std::string name, std::string pin, std::vector<std::string> settingNames, 
-                     std::vector<double> settingValues) : mach::Device<double>::Device(name, pin) {
-    this->settingNames = settingNames;
-    this->settingValues = settingValues;
-    this->value = 0.0;
-}
-
-void mach::Sensor::initialize(mach::LabJack& labjack) {
+void mach::Sensor::setLabjack(mach::LabJack& labjack) {
+    // TODO Proper error handling with LabJack.
     try {
         int err, errorAddress = -2; // INITIAL_ERR_ADDRESS;
         err = LJM_eWriteNames(labjack.getHandle(), 
@@ -25,14 +20,13 @@ void mach::Sensor::initialize(mach::LabJack& labjack) {
         );
         // ErrorCheck(err, "LJM_eWriteNames");
     } catch (...) {
-        std::cout << "Labjack Sensor Error: " << boost::current_exception_diagnostic_information() << std::endl;
+        spdlog::error("Labjack Sensor Error: {}!", boost::current_exception_diagnostic_information());
     }
 }
 
 void mach::Sensor::print() {
-    std::cout << "Valve: " << name << ", Port: " << port << ", State: " << getValue() << std::endl;
-    std::cout << "Settings: " << std::endl;
+    spdlog::info("{}Sensor: {}, Port: {}, Value: {}", type == LABJACK ? "Labjack " : "", name, port, getValue());
     for (int i = 0; i < settingNames.size(); i++) {
-        std::cout << settingNames[i] << ": " << settingValues[i] << std::endl;
+        spdlog::info("\tSetting: {}, Value: {}", settingNames[i], settingValues[i]);
     }
 }

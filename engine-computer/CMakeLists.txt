@@ -29,6 +29,7 @@ endif()
 
 include_directories(${LJM_FOLDER})
 include_directories(vendor/labjack)
+include_directories(src)
 
 # set windows version macro for boost::asio
 macro(get_win_hex outvar)

@@ -5,11 +5,10 @@ valves:
 
 sensors:
   - name: P69
-    pin: 4
+    port: 4
     settings:
       RANGE: 10.0
-
   - name: P70
-    pin: 5
+    port: 5
     settings:
       RANGE: 10.0

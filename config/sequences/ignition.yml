@@ -1,55 +1,55 @@
 steps:
   - action: OPEN
-    item: V34
+    valve: V34
 
   - action: SLEEP
     duration: 10
 
   - action: OPEN
-    item: DIO6
+    valve: DIO6
 
   - action: CHECK
-    item: IGN
+    valve: IGN
     value: 365
 
   - action: CLOSE
-    item: V34
+    valve: V34
 
   - action: OPEN
-    item: V20
+    valve: V20
 
   - action: OPEN
-    item: V30
+    valve: V30
 
   - action: SLEEP
     duration: 4.5
 
   - action: CLOSE
-    item: V30
+    valve: V30
 
   - action: OPEN
-    item: V33
+    valve: V33
 
   - action: SLEEP
     duration: 2.5
 
   - action: CLOSE
-    item: V20
+    valve: V20
 
   - action: OPEN
-    item: V22
+    valve: V22
 
   - action: SLEEP
     duration: 3
 
   - action: CLOSE
-    item: V33
+    valve: V33
 
   - action: CLOSE
-    item: V22
+    valve: V22
 
   - action: CLOSE
-    item: V31
+    valve: V31
 
   - action: CLOSE
-    item: V10
+    valve: V10

@@ -3,18 +3,24 @@
 
 namespace mach {
 
+enum DeviceType {
+    LABJACK,
+    REMOTE
+};
+
 class LabJack;
 
 template <typename T>
 class Device {
     public:
-        Device(std::string name, std::string port);
-        
-        virtual void initialize(LabJack& labjack);
+        Device(DeviceType type, std::string name, std::string port) : type(type), name(name), port(port) {}
+
+        virtual void setLabjack(LabJack& labjack);
         virtual T getValue();
         virtual void print() = 0;
 
     protected:
+        DeviceType type;
         LabJack* labjack;
         std::string name;
         std::string port;

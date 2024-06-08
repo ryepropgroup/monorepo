@@ -4,31 +4,22 @@
 #include <yaml-cpp/yaml.h>
 #include "include/labjack.hpp"
 #include "include/config_parser.hpp"
-//
-// Created by danie on 2023-12-14.
-//
+#include "include/device_manager.hpp"
+
+#define LABJACK_CONFIG std::string("../../config/labjack.yml")
+#define REMOTE_CONFIG std::string("../../config/remote.yml")
 
 int main() {
-    spdlog::info("Hello, {}!", "World");
-    YAML::Emitter out;
-    out << YAML::BeginSeq;
-    out << "eggs";
-    out << "bread";
-    out << "milk";
-    out << YAML::EndSeq;
-    std::cout<< out.c_str()<<std::endl;
+    spdlog::info("MACH: Hello World!");
 
     // One LabJack for now.
     mach::LabJack labJack("LabJack");
-    mach::parseConfig(labJack);
+
+    // Read configuration 🤓
+    mach::parseLabjackConfig(labJack, LABJACK_CONFIG);
+    mach::parseRemoteConfig(REMOTE_CONFIG);
 
     // Print all devices for debug.
-    std::cout << "Valves: " << labJack.boolDevices.size() << std::endl;
-    for (auto device : labJack.boolDevices) {
-        device->print();
-    }
-    std::cout << "Sensors: " << labJack.floatDevices.size() << std::endl;
-    for (auto device : labJack.floatDevices) {
-        device->print();
-    }
+    mach::DeviceManager& deviceManager = mach::DeviceManager::getInstance();
+    deviceManager.printDevices();
 }
