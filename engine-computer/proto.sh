@@ -1,0 +1,2 @@
+mkdir ./generated/
+vendor/vcpkg/packages/protobuf_x64-linux/tools/protobuf/protoc -I ./src/proto --cpp_out=./generated --grpc_out=./generated --plugin=protoc-gen-grpc=./vendor/vcpkg/packages/grpc_x64-linux/tools/grpc/grpc_cpp_plugin Test.proto 

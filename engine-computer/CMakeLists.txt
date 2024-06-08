@@ -9,6 +9,9 @@ find_package(Boost REQUIRED COMPONENTS asio)
 find_package(spdlog CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 
+find_package(absl CONFIG REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
 if (APPLE)
     message("CMake: SETTING Apple Library Paths")
     set(LJM_FOLDER "/usr/local/lib")
@@ -28,7 +31,7 @@ if (NOT EXISTS ${LJM})
 endif()
 
 include_directories(${LJM_FOLDER})
-include_directories(vendor/labjack)
+include_directories("${PROJECT_SOURCE_DIR}/generated/")
 
 # set windows version macro for boost::asio
 macro(get_win_hex outvar)
@@ -42,7 +45,8 @@ endif()
 
 # add executable
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
-    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp"
+    "${PROJECT_SOURCE_DIR}/generated/*.cc" "${PROJECT_SOURCE_DIR}/generated/*.h")
 else()
     file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
 endif()
@@ -52,4 +56,8 @@ add_executable(engine_computer ${SOURCES})
 if(MINGW) 
     target_link_libraries(engine_computer PRIVATE ws2_32) 
 endif()
-target_link_libraries(engine_computer PRIVATE ${LJM} Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
+target_link_libraries(engine_computer PUBLIC ${LJM} protobuf::libprotobuf absl::flags absl::strings absl::check 
+absl::flags_parse
+absl::log
+gRPC::grpc++_reflection
+gRPC::gpr gRPC::grpc gRPC::grpc++ Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
