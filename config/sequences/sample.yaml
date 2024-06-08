@@ -1,0 +1,45 @@
+sequences:
+  - name: ignition
+    steps:
+      - action: OPEN
+        item: V34
+        duration: 10
+      - action: OPEN
+        item: DIO6
+        duration: 0
+      - action: check
+        item: IGN
+        value: 365
+      - action: CLOSE
+        item: V34
+        duration: 0
+      - action: OPEN
+        item: V20
+        duration: 0
+      - action: OPEN
+        item: V30
+        duration: 4.5
+      - action: CLOSE
+        item: V30
+        duration: 0
+      - action: OPEN
+        item: V33
+        duration: 2.5
+      - action: CLOSE
+        item: V20
+        duration: 0
+      - action: OPEN
+        item: V22
+        duration: 3
+      - action: CLOSE
+        item: V33
+        duration: 0
+      - action: CLOSE
+        item: V22
+        duration: 0
+      - action: CLOSE
+        item: V31
+        duration: 0
+      - action: CLOSE
+        item: V10
+        duration: 0

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+message SensorData {
+    int64 timestamp = 1;
+    map<string, float> values = 2;
+}
+
+message DeviceInformation {
+    map<string, Device> devices = 1;
+    repeated string sequences = 2;
+}
+
+message ServerCommand {
+    int32 pin = 1;
+}
+
+message ClientCommand {
+    string sequence = 1;
+}
+
+message Command {
+    string action = 1;
+    oneof command {
+        ServerCommand server_command = 2;
+        ClientCommand client_command = 3;
+    }
+}
+
+
+
+message Device {
+    enum DeviceType {
+        SENSOR = 0;
+        VALVE = 1;
+    }
+    enum DeviceLocation {
+        GSE = 0;
+        ROCKET = 1;
+    }
+    int32 pin = 1;
+    DeviceType type = 2;
+    DeviceLocation location = 3;
+}
+
+message Response {
+    bool success = 1;
+    string message = 2;
+}

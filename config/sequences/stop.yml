@@ -1,0 +1,48 @@
+steps:
+  - action: CLOSE
+    item: V10
+
+  - action: CLOSE
+    item: V21
+
+  - action: CLOSE
+    item: V20
+
+  - action: CLOSE
+    item: V30
+
+  - action: CLOSE
+    item: V31
+
+  - action: CLOSE
+    item: V32
+
+  - action: CLOSE
+    item: V34
+
+  - action: CLOSE
+    item: V36
+
+  - action: CLOSE
+    item: V37
+
+  - action: CLOSE
+    item: V11_NO
+
+  - action: CLOSE
+    item: V12_NO
+
+  - action: CLOSE
+    item: V22
+
+  - action: CLOSE
+    item: V23_NO
+
+  - action: CLOSE
+    item: V33
+
+  - action: CLOSE
+    item: V35_NO
+
+  - action: CLOSE
+    item: V38_NO

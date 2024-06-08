@@ -12,7 +12,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/vendor/**",
+                "${workspaceFolder}/engine-computer/vendor/**",
                 "${workspaceFolder}/engine-computer/build/vcpkg_installed/x86-windows/include/**"
             ],
             "defines": [
