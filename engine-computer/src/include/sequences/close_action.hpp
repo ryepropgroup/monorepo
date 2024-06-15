@@ -6,9 +6,9 @@
 
 namespace mach {
     
-class OpenAction : public Action {
+class CloseAction : public Action {
     public:
-        OpenAction() : Action() {}
+        CloseAction() : Action() {}
 
         bool init(YAML::Node node);
         void execute() override;

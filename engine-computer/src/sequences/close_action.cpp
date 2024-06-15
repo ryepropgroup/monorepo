@@ -1,11 +1,11 @@
 #include <string>
-#include "include/sequences/open_action.hpp"
+#include "include/sequences/close_action.hpp"
 #include "include/device_manager.hpp"
 
 
 namespace mach {
 
-bool OpenAction::init(YAML::Node node) {
+bool CloseAction::init(YAML::Node node) {
     if (!node["valve"]) {
         return false;
     }
@@ -18,8 +18,8 @@ bool OpenAction::init(YAML::Node node) {
     return true;
 }
 
-void OpenAction::execute() {
-    valve->open();
+void CloseAction::execute() {
+    valve->close();
 }
 
 } // namespace mach
