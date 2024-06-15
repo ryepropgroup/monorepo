@@ -6,15 +6,15 @@
 
 namespace mach {
     
-class OpenAction : public Action {
+class SleepAction : public Action {
     public:
-        OpenAction() : Action() {}
+        SleepAction() : Action() {}
 
         bool init(YAML::Node node);
         void execute() override;
 
     private:
-        std::shared_ptr<Valve> valve;
+        double duration;
 };
 
 }
