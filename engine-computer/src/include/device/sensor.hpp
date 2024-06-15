@@ -16,6 +16,7 @@ class Sensor : public Device<double> {
         }
 
         void setLabjack(LabJack& labjack) override;
+        
         void print() override;
 };
 
