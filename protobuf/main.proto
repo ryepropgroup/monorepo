@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-import "messages";
+// import "messages";
 
 service Main {
-    rpc SendSensorData (SensorData) returns (Response) {}
-    rpc CommandStream (stream ClientCommand) returns (stream ServerCommand) {}
-    // Ping
-    
+    // stream of sensor data from engine-computer to Go
+    // rpc SensorDataStream (stream SensorData) returns (Response) {}
+
+    // stream of commands from Go to engine-computer
+    // rpc CommandStream (DeviceInformation) returns (stream SequenceCommand) {}
 }
