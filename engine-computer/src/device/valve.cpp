@@ -1,7 +1,7 @@
 #include <string>
 #include <spdlog/spdlog.h>
-#include "include/device/valve.hpp"
-#include "include/device/device.hpp"
+#include "mach/device/valve.hpp"
+#include "mach/device/device.hpp"
 
 bool mach::Valve::isOpen() {
     return getValue();

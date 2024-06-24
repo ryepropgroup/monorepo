@@ -1,4 +1,4 @@
-#include "include/device/device.hpp"
+#include "mach/device/device.hpp"
 
 template <typename T>
 void mach::Device<T>::setLabjack(mach::LabJack& labjack) {

@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "include/sequences/action.hpp"
+#include "mach/sequences/action.hpp"
 
 namespace mach {
 

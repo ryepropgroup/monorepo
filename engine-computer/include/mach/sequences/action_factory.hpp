@@ -1,8 +1,10 @@
+#pragma once
 #include <string>
 #include <memory>
 #include <unordered_map>
 #include <functional>
-#include "sequences/action.hpp"
+#include <yaml-cpp/yaml.h>
+#include "action.hpp"
 
 namespace mach {
 
@@ -19,12 +21,17 @@ class ActionFactory {
         ActionFactory(ActionFactory const&) = delete;
         void operator=(ActionFactory const&) = delete;
 
-        template <typename T>
-        void registerAction(const std::string& action);
+        void registerAction(const std::string& action, std::function<std::unique_ptr<Action>()> creator);
+
+        /**
+        * @brief Creates an action from the sequence config.
+        * 
+        * @param node The YAML node from the sequence config.
+        * @return std::unique_ptr<Action> The created action.
+        */
+        std::unique_ptr<Action> createAction(const YAML::Node& node);
     
     private:
         ActionFactory() {}
-
-        std::unique_ptr<Action> createAction(const std::string& action);
     };
 }
