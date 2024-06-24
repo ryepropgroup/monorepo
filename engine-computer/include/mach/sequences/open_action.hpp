@@ -1,20 +1,19 @@
 #pragma once
-
 #include <memory>
-#include "./action.hpp"
+#include "action.hpp"
 #include "../device/valve.hpp"
 
 namespace mach {
     
-class SleepAction : public Action {
+class OpenAction : public Action {
     public:
-        SleepAction() : Action() {}
+        OpenAction() : Action() {}
 
         bool init(YAML::Node node);
         void execute() override;
 
     private:
-        double duration;
+        std::shared_ptr<Valve> valve;
 };
 
 }

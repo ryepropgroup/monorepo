@@ -1,9 +1,9 @@
 #include <string>
 #include <chrono>
 #include <spdlog/spdlog.h>
-#include "include/sequences/sleep_action.hpp"
-#include "include/device_manager.hpp"
-#include "include/util.hpp"
+#include "mach/sequences/sleep_action.hpp"
+#include "mach/device_manager.hpp"
+#include "mach/util.hpp"
 
 namespace mach {
 

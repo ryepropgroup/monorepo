@@ -3,11 +3,11 @@
 #include <yaml-cpp/yaml.h>
 #include <filesystem>
 #include <spdlog/spdlog.h>
-#include "include/labjack.hpp"
-#include "include/device/valve.hpp"
-#include "include/device/sensor.hpp"
-#include "include/config_mapping.hpp"
-#include "include/device_manager.hpp"
+#include "mach/labjack.hpp"
+#include "mach/device/valve.hpp"
+#include "mach/device/sensor.hpp"
+#include "mach/config_mapping.hpp"
+#include "mach/device_manager.hpp"
 
 namespace mach {
 

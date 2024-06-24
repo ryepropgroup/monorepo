@@ -1,6 +1,6 @@
 #include <string>
-#include "include/sequences/close_action.hpp"
-#include "include/device_manager.hpp"
+#include "mach/sequences/close_action.hpp"
+#include "mach/device_manager.hpp"
 
 
 namespace mach {

@@ -30,6 +30,7 @@ endif()
 include_directories(${LJM_FOLDER})
 include_directories(vendor/labjack)
 include_directories(src)
+include_directories(include)
 
 # set windows version macro for boost::asio
 macro(get_win_hex outvar)
@@ -43,9 +44,9 @@ endif()
 
 # add executable
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
-    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp")
 else()
-    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/src/*.hpp")
+    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp")
 endif()
 add_executable(engine_computer ${SOURCES})
 

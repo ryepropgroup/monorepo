@@ -1,9 +1,9 @@
 #include <vector>
 #include <unordered_map>
-#include "include/labjack.hpp"
-#include "include/device/valve.hpp"
-#include "include/device/sensor.hpp"
-#include "include/device_manager.hpp"
+#include "mach/labjack.hpp"
+#include "mach/device/valve.hpp"
+#include "mach/device/sensor.hpp"
+#include "mach/device_manager.hpp"
 
 
 void mach::DeviceManager::addDevice(std::shared_ptr<Valve> valve) {

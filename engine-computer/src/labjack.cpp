@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
-#include "include/labjack.hpp"
-#include "include/util.hpp"
+#include "mach/labjack.hpp"
+#include "mach/util.hpp"
 #include "LabJackM.h"
 #include "../vendor/labjack/LJM_Utilities.h"
 
