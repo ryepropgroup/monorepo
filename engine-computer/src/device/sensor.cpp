@@ -1,5 +1,5 @@
-#include "include/device/sensor.hpp"
-#include "include/util.hpp"
+#include "mach/device/sensor.hpp"
+#include "mach/util.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -26,7 +26,7 @@ void mach::Sensor::setLabjack(mach::LabJack& labjack) {
 
 void mach::Sensor::print() {
     spdlog::info("{}Sensor: {}, Port: {}, Value: {}", type == LABJACK ? "Labjack " : "", name, port, getValue());
-    for (int i = 0; i < settingNames.size(); i++) {
+    for (std::size_t i = 0; i < settingNames.size(); i++) {
         spdlog::info("\tSetting: {}, Value: {}", settingNames[i], settingValues[i]);
     }
 }

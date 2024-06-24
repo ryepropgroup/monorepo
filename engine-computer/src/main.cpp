@@ -2,14 +2,14 @@
 #include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
-#include "include/labjack.hpp"
-#include "include/config_parser.hpp"
-#include "include/device_manager.hpp"
-#include "include/sequences/action_factory.hpp"
-#include "include/sequences/open_action.hpp"
-#include "include/device/device.hpp"
-#include "include/sequences/sleep_action.hpp"
-#include "include/sequences/close_action.hpp"
+#include "mach/labjack.hpp"
+#include "mach/config_parser.hpp"
+#include "mach/device_manager.hpp"
+#include "mach/sequences/action_factory.hpp"
+#include "mach/sequences/open_action.hpp"
+#include "mach/device/device.hpp"
+#include "mach/sequences/sleep_action.hpp"
+#include "mach/sequences/close_action.hpp"
 
 #define LABJACK_CONFIG std::string("../../config/labjack.yml")
 #define REMOTE_CONFIG std::string("../../config/remote.yml")
@@ -30,7 +30,7 @@ int main() {
 
     // Register sequence actions.
     mach::ActionFactory& actionFactory = mach::ActionFactory::getInstance();
-    actionFactory.registerAction<mach::OpenAction>("OPEN");
-    actionFactory.registerAction<mach::CloseAction>("CLOSE");
-    actionFactory.registerAction<mach::SleepAction>("SLEEP");
+    actionFactory.registerAction("OPEN", []() { return std::make_unique<mach::OpenAction>(); });
+    actionFactory.registerAction("CLOSE", []() { return std::make_unique<mach::CloseAction>(); });
+    actionFactory.registerAction("SLEEP", []() { return std::make_unique<mach::SleepAction>(); });
 }
