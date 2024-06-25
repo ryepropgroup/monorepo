@@ -10,23 +10,9 @@ message DeviceInformation {
     repeated string sequences = 2;
 }
 
-message ServerCommand {
-    int32 pin = 1;
-}
-
-message ClientCommand {
+message SequenceCommand {
     string sequence = 1;
 }
-
-message Command {
-    string action = 1;
-    oneof command {
-        ServerCommand server_command = 2;
-        ClientCommand client_command = 3;
-    }
-}
-
-
 
 message Device {
     enum DeviceType {
@@ -35,7 +21,7 @@ message Device {
     }
     enum DeviceLocation {
         GSE = 0;
-        ROCKET = 1;
+        REMOTE = 1;
     }
     int32 pin = 1;
     DeviceType type = 2;
