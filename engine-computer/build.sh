@@ -5,8 +5,8 @@ echo "********** MACH: Configuring the build with CMake **********"
 cmake --preset=linux
 
 else
-export CC=/opt/homebrew/bin/gcc-13
-export CXX=/opt/homebrew/bin/g++-13
+export CC=/opt/homebrew/bin/gcc-14
+export CXX=/opt/homebrew/bin/g++-14
 cmake --preset=macos
 fi
 

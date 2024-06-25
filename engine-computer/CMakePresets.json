@@ -27,8 +27,8 @@
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
-                "CMAKE_CXX_COMPILER": "g++-13",
-                "CMAKE_C_COMPILER": "gcc-13"
+                "CMAKE_CXX_COMPILER": "g++-14",
+                "CMAKE_C_COMPILER": "gcc-14"
             }
         }
     ]
