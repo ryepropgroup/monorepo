@@ -6,3 +6,4 @@ set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
 
 # Add the subdirectory containing the Go project
 add_subdirectory(go)
+# add_subdirectory(engine-computer)
