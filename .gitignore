@@ -1,3 +1,5 @@
 .vscode
 build/*
 */*/*.code-workspace
+protobuf/cpp/*
+protobuf/go/*

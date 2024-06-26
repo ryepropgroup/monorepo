@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "messages.proto";
+option go_package = "github.com/ryepropgroup/protoServer/protos/main";
 
 service Main {
     // stream of sensor data from engine-computer to Go
