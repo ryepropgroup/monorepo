@@ -3,7 +3,9 @@
     "boost-asio",
     "boost-exception",
     "yaml-cpp",
-    "spdlog"
+    "spdlog",
+    "protobuf",
+    
   ],
   "overrides": [
     {"name":"boost-core", "version": "1.85.0", "port-version": 2},
