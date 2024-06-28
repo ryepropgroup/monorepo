@@ -6,9 +6,11 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
                 "CMAKE_CXX_COMPILER": "cl.exe",
-                "CMAKE_C_COMPILER": "cl.exe"
+                "CMAKE_C_COMPILER": "cl.exe",
+                "VCPKG_MANIFEST_DIR": "${sourceDir}/..",
+                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg"
             }
         },
         {
@@ -16,9 +18,11 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
                 "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_C_COMPILER": "gcc"
+                "CMAKE_C_COMPILER": "gcc",
+                "VCPKG_MANIFEST_DIR": "${sourceDir}/..",
+                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg"
             }
         },
         {
@@ -26,9 +30,11 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
                 "CMAKE_CXX_COMPILER": "g++-14",
-                "CMAKE_C_COMPILER": "gcc-14"
+                "CMAKE_C_COMPILER": "gcc-14",
+                "VCPKG_MANIFEST_DIR": "${sourceDir}/..",
+                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg"
             }
         }
     ]

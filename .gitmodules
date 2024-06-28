@@ -1,6 +1,6 @@
-[submodule "engine-computer/vendor/vcpkg"]
-	path = engine-computer/vendor/vcpkg
-	url = https://github.com/Microsoft/vcpkg.git
 [submodule "teensy/vendor/nanopb"]
 	path = teensy/vendor/nanopb
 	url = https://github.com/nanopb/nanopb
+[submodule "vendor/vcpkg"]
+	path = vendor/vcpkg
+	url = https://github.com/Microsoft/vcpkg.git

@@ -7,9 +7,9 @@
 #include "mach/device/sensor.hpp"
 #include "mach/config_mapping.hpp"
 
-#define SEQUENCES_FOLDER "../config/sequences/"
+// #define SEQUENCES_FOLDER "../config/sequences/"
 
-namespace mach {
+// namespace mach {
 
 void parseSequences(LabJack &labJack) {
     // if (!std::filesystem::exists(SEQUENCES_FOLDER)) {
@@ -53,4 +53,4 @@ void parseSequence(LabJack &labJack, std::string file) {
     // }
 }
 
-} // namespace mach
+// } // namespace mach
