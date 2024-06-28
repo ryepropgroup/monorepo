@@ -4,8 +4,7 @@
     "boost-exception",
     "yaml-cpp",
     "spdlog",
-    "protobuf",
-    
+    "grpc"
   ],
   "overrides": [
     {"name":"boost-core", "version": "1.85.0", "port-version": 2},
@@ -28,6 +27,7 @@
     {"name":"boost-ptr-container", "version": "1.85.0", "port-version": 1},
     {"name":"boost-property-tree", "version": "1.85.0", "port-version": 1},
     {"name":"boost-static-string", "version": "1.85.0", "port-version": 1},
-    {"name":"boost-random", "version": "1.85.0", "port-version": 1}
+    {"name":"boost-random", "version": "1.85.0", "port-version": 1},
+    {"name":"grpc", "version": "1.51.1", "port-version": 3}
   ]
 }
