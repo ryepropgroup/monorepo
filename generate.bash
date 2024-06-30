@@ -2,7 +2,8 @@
 
 # Define the paths to the proto files
 PROTO_DIR="./protobuf"
-GO_PROJ_DIR="./go/src/rpc"
+GO_PROJ_DIR="./go/src/protos"
+GO_PROJ_DIR_MSG=$GO_PROJ_DIR"/messages"
 MAIN_PROTO="$PROTO_DIR/main.proto"
 MESSAGES_PROTO="$PROTO_DIR/messages.proto"
 
@@ -10,6 +11,7 @@ MESSAGES_PROTO="$PROTO_DIR/messages.proto"
 GO_OUT_DIR="$PROTO_DIR/go"
 CPP_OUT_DIR="$PROTO_DIR/cpp"
 
+mkdir -p $GO_PROJ_DIR
 mkdir -p $GO_OUT_DIR
 mkdir -p $CPP_OUT_DIR
 
@@ -56,3 +58,5 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Successfully compiled the proto files for C++ and Go."
+mkdir -p $GO_PROJ_DIR_MSG
+mv $GO_PROJ_DIR/messages.pb.go $GO_PROJ_DIR_MSG
