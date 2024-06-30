@@ -2,6 +2,7 @@
 
 # Define the paths to the proto files
 PROTO_DIR="./protobuf"
+GO_PROJ_DIR="./go/src/rpc"
 MAIN_PROTO="$PROTO_DIR/main.proto"
 MESSAGES_PROTO="$PROTO_DIR/messages.proto"
 
@@ -30,13 +31,7 @@ source ~/.bashrc
 
 PROTOC_GEN_GO=$(which protoc-gen-go)
 PROTOC_GEN_GO_GRPC=$(which protoc-gen-go-grpc)
-
-case $(uname -s) in
-    Linux*)     OSPATH=x64-linux;;
-    Darwin*)    OSPATH=arm64-osx;;
-    *)          OSPATH=windows
-esac
-PROTOC_GEN_GRPC=./engine-computer/build/vcpkg_installed/$OSPATH/tools/grpc/grpc_cpp_plugin
+PROTOC_GEN_GRPC=./tools/grpc/grpc_cpp_plugin
 # Debugging output to verify paths
 echo "PROTOC_GEN_GO path: $PROTOC_GEN_GO"
 echo "PROTOC_GEN_GO_GRPC path: $PROTOC_GEN_GO_GRPC"
@@ -45,10 +40,19 @@ echo "PROTOC_GEN_GRPC path: $PROTOC_GEN_GRPC"
 protoc -I=$PROTO_DIR --cpp_out=$CPP_OUT_DIR --grpc_out=$CPP_OUT_DIR --plugin=protoc-gen-grpc=$PROTOC_GEN_GRPC \
        $MAIN_PROTO $MESSAGES_PROTO
 
+if [ $? -ne 0 ]; then
+    echo "Failed to compile the proto files for C++."
+    exit 1
+fi
 # Compile the proto files for Go
 protoc -I=$PROTO_DIR --plugin=protoc-gen-go=$PROTOC_GEN_GO --plugin=protoc-gen-go-grpc=$PROTOC_GEN_GO_GRPC \
-       --go_out=$GO_OUT_DIR --go_opt=paths=source_relative \
-       --go-grpc_out=$GO_OUT_DIR --go-grpc_opt=paths=source_relative \
+       --go_out=$GO_PROJ_DIR --go_opt=paths=source_relative \
+       --go-grpc_out=$GO_PROJ_DIR --go-grpc_opt=paths=source_relative \
        $MAIN_PROTO $MESSAGES_PROTO
+if [ $? -ne 0 ]; then
+    echo "Failed to compile the proto files for Go."
+    exit 1
+    
+fi
 
-echo "Protobuf files have been successfully compiled for Go and C++."
+echo "Successfully compiled the proto files for C++ and Go."
