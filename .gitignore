@@ -1,5 +1,9 @@
 .vscode
 build/*
 */*/*.code-workspace
-protobuf/cpp/*
-protobuf/go/*
+protobuf/cpp
+protobuf/go
+tools
+go/src/rpc/*
+.DS_Store
+.idea
