@@ -28,12 +28,15 @@ source ~/.bashrc
         exit 1
     fi
 
-./engine-computer/vendor/vcpkg/vcpkg install grpc protobuf
-
 PROTOC_GEN_GO=$(which protoc-gen-go)
 PROTOC_GEN_GO_GRPC=$(which protoc-gen-go-grpc)
-PROTOC_GEN_GRPC=./engine-computer/vendor/vcpkg/installed/arm64-osx/tools/grpc/grpc_cpp_plugin
 
+case $(uname -s) in
+    Linux*)     OSPATH=x64-linux;;
+    Darwin*)    OSPATH=arm64-osx;;
+    *)          OSPATH=windows
+esac
+PROTOC_GEN_GRPC=./engine-computer/build/vcpkg_installed/$OSPATH/tools/grpc/grpc_cpp_plugin
 # Debugging output to verify paths
 echo "PROTOC_GEN_GO path: $PROTOC_GEN_GO"
 echo "PROTOC_GEN_GO_GRPC path: $PROTOC_GEN_GO_GRPC"

@@ -11,7 +11,7 @@
 
 // namespace mach {
 
-void parseSequences(LabJack &labJack) {
+// void parseSequences(LabJack &labJack) {
     // if (!std::filesystem::exists(SEQUENCES_FOLDER)) {
     //     throw std::runtime_error("Sequences folder file not found!");
     // }
@@ -24,9 +24,9 @@ void parseSequences(LabJack &labJack) {
     //         }
     //     }
     // }
-}
+// }
 
-void parseSequence(LabJack &labJack, std::string file) {
+// void parseSequence(LabJack &labJack, std::string file) {
     // YAML::Node config = YAML::LoadFile(file);
     
     // YAML::Node valves = config["valves"];
@@ -51,6 +51,6 @@ void parseSequence(LabJack &labJack, std::string file) {
     //     std::pair<std::vector<std::string>, std::vector<double>> settings = convertConfigToLabjack(config, port);
     //     labJack.addDevice(std::make_shared<mach::Sensor>(name, port, settings.first, settings.second));
     // }
-}
+// }
 
 // } // namespace mach
