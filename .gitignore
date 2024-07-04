@@ -7,3 +7,7 @@ go/src/protos/*
 .idea
 .vscode/settings.json
 engine-computer/generated
+gui/rpcSimulator/*.py
+gui/rpcSimulator/__pycache__/*
+gui/venv/
+protobuf/cpp
