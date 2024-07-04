@@ -5,3 +5,4 @@ tools
 go/src/protos/*
 .DS_Store
 .idea
+.vscode/settings.json

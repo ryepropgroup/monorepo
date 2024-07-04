@@ -3,8 +3,8 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "device/valve.hpp"
-#include "device/sensor.hpp"
+#include "mach/device/valve.hpp"
+#include "mach/device/sensor.hpp"
 
 namespace mach {
 

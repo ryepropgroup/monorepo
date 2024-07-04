@@ -2,18 +2,19 @@
 #include <chrono>
 #include <spdlog/spdlog.h>
 #include "mach/sequences/sleep_action.hpp"
-#include "mach/device_manager.hpp"
+#include "mach/device/device_manager.hpp"
 #include "mach/util.hpp"
 
 namespace mach {
 
 bool SleepAction::init(YAML::Node node) {
     if (!node["duration"]) {
+        spdlog::error("MACH: Sleep action is missing 'duration' field.");
         return false;
     }
     this->duration = node["duration"].as<double>();
     if (this->duration <= 0.0) {
-        spdlog::error("Invalid sleep action defined (duration of {}s)", this->duration);
+        spdlog::error("MACH: Sleep action has invalid duration of '{}'.", this->duration);
         return false;
     }
     return true;

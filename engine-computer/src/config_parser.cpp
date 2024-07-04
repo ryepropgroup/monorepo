@@ -7,7 +7,7 @@
 #include "mach/device/valve.hpp"
 #include "mach/device/sensor.hpp"
 #include "mach/config_mapping.hpp"
-#include "mach/device_manager.hpp"
+#include "mach/device/device_manager.hpp"
 
 namespace mach {
 

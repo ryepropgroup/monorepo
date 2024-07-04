@@ -5,15 +5,16 @@
 
 namespace mach {
     
-class SleepAction : public Action {
+class CheckAction : public Action {
     public:
-        SleepAction() : Action() {}
+        CheckAction() : Action() {}
 
         bool init(YAML::Node node);
         void execute() override;
 
     private:
-        double duration;
+        std::shared_ptr<Valve> valve;
+        double target;
 };
 
 }

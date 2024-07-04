@@ -5,7 +5,6 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include "LabJackM.h"
-#include <boost/exception/diagnostic_information.hpp>
 // #include "../vendor/labjack/LJM_Utilities.h"
 
 void mach::Sensor::setLabjack(mach::LabJack& labjack) {
@@ -20,7 +19,7 @@ void mach::Sensor::setLabjack(mach::LabJack& labjack) {
         );
         // ErrorCheck(err, "LJM_eWriteNames");
     } catch (...) {
-        spdlog::error("Labjack Sensor Error: {}!", boost::current_exception_diagnostic_information());
+        // spdlog::error("Labjack Sensor Error: {}!", boost::current_exception_diagnostic_information());
     }
 }
 

@@ -3,8 +3,7 @@
 #include "mach/labjack.hpp"
 #include "mach/device/valve.hpp"
 #include "mach/device/sensor.hpp"
-#include "mach/device_manager.hpp"
-
+#include "mach/device/device_manager.hpp"
 
 void mach::DeviceManager::addDevice(std::shared_ptr<Valve> valve) {
     valves[valve.get()->getName()] = std::move(valve);

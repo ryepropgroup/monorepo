@@ -6,7 +6,7 @@ steps:
     duration: 10
 
   - action: OPEN
-    valve: DIO6
+    valve: V21
 
   - action: CHECK
     valve: IGN
