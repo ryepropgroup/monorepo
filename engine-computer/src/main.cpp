@@ -1,5 +1,4 @@
 #include <iostream>
-#include <boost/asio.hpp>
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 #include "mach/labjack.hpp"

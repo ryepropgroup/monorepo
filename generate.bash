@@ -4,7 +4,7 @@
 PROTO_DIR="./protobuf"
 GO_PROJ_DIR="./go/src/protos"
 GO_PROJ_DIR_MSG=$GO_PROJ_DIR"/messages"
-MAIN_PROTO="$PROTO_DIR/main.proto"
+MAIN_PROTO="$PROTO_DIR/service.proto"
 MESSAGES_PROTO="$PROTO_DIR/messages.proto"
 
 # Create directories for the generated code
