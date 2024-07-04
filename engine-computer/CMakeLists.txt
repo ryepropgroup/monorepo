@@ -4,7 +4,6 @@ project(engine_computer)
 set (CMAKE_CXX_STANDARD 20)
 
 find_package(Boost REQUIRED COMPONENTS exception)
-find_package(Boost REQUIRED COMPONENTS asio)
 find_package(spdlog CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 
@@ -53,4 +52,4 @@ add_executable(engine_computer ${SOURCES})
 if(MINGW) 
     target_link_libraries(engine_computer PRIVATE ws2_32) 
 endif()
-target_link_libraries(engine_computer PRIVATE ${LJM} Boost::asio Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
+target_link_libraries(engine_computer PRIVATE ${LJM} Boost::exception spdlog::spdlog yaml-cpp::yaml-cpp)
