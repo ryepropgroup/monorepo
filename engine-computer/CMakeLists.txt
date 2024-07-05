@@ -29,12 +29,15 @@ include_directories(${LJM_FOLDER})
 include_directories(vendor/labjack)
 include_directories(src)
 include_directories(include)
+include_directories(generated)
 
 # add executable
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
-    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp" 
+    "${PROJECT_SOURCE_DIR}/generated/*.*")
 else()
-    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp")
+    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp" 
+    "${PROJECT_SOURCE_DIR}/generated/*.*")
 endif()
 add_executable(engine_computer ${SOURCES})
 

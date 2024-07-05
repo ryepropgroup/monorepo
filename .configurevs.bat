@@ -1,4 +1,5 @@
 @echo off
+@REM This script is used to configure a cmake build on windows using Visual Studio's dev command prompt.
 
 for /f "usebackq tokens=*" %%i in (`vendor\vswhere\vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do (
   set InstallDir=%%i
@@ -17,7 +18,4 @@ if not defined DevEnvDir (
 )
 
 echo ********** MACH: Configuring the build with CMake **********
-cmake --preset=windows-x64
-
-echo ********** MACH: Building the project **********
-cmake --build build --config Release
+cmake engine-computer --preset=windows-x64

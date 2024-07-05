@@ -6,3 +6,4 @@ go/src/protos/*
 .DS_Store
 .idea
 .vscode/settings.json
+engine-computer/generated
