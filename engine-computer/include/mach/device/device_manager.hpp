@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <list>
 #include "mach/labjack.hpp"
 #include "mach/device/valve.hpp"
 #include "mach/device/sensor.hpp"

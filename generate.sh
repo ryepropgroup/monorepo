@@ -20,7 +20,7 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 export PATH=$PATH:$(go env GOPATH)/bin
 source ~/.bashrc
 
-source ./gui/venv/bin/activate
+source ./gui/.venv/bin/activate
 python -m grpc_tools.protoc -I=protobuf --python_out=$PYTHON_OUT_DIR --grpc_python_out=$PYTHON_OUT_DIR $MAIN_PROTO
 python -m grpc_tools.protoc -I=protobuf --python_out=$PYTHON_OUT_DIR $MESSAGES_PROTO
 

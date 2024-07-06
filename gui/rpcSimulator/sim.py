@@ -52,7 +52,7 @@ def run():
     channel = grpc.insecure_channel("localhost:50051")
 
     # Create a stub (client)
-    stub = service_pb2_grpc.ServiceStub(channel)
+    stub = service_pb2_grpc.EngineComputerStub(channel)
 
     # Create a generator for sending sensor data
     def sensor_data_generator():
