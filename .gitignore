@@ -9,5 +9,5 @@ go/src/protos/*
 engine-computer/generated
 gui/rpcSimulator/*.py
 gui/rpcSimulator/__pycache__/*
-gui/venv/
+gui/.venv/
 protobuf/cpp
