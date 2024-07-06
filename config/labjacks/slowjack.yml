@@ -21,11 +21,11 @@ valves:
 sensors:
   - name: T1
     port: AIN7
-    thermocouple: K
+    thermocouple_type: K
 
   - name: T2
     port: AIN9
-    thermocouple: K
+    thermocouple_type: K
 
   - name: P10
     port: AIN4

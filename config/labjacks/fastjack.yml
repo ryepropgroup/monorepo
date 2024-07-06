@@ -28,16 +28,16 @@ sensors:
     port: AIN10
     range: 0.1
     negative_channel: AIN11
-    thermocouple: K
+    thermocouple_type: K
 
   - name: INJ2
     port: AIN8
     range: 0.1
     negative_channel: AIN9
-    thermocouple: K
+    thermocouple_type: K
 
   - name: IGN
     port: AIN6
     range: 0.1
     negative_channel: AIN7
-    thermocouple: K
+    thermocouple_type: K

@@ -23,6 +23,7 @@ mach::Sensor::Sensor(DeviceType type, std::string name, std::string port) :
 }
 
 void mach::Sensor::setLabjack(std::shared_ptr<LabJack> labjack) {
+    this->labjack = labjack;
     if (labJackSettings.first.size() == 0) {
         return;
     }
@@ -56,11 +57,15 @@ void mach::Sensor::setNegativeChannel(std::string channel) {
 
 void mach::Sensor::updateValue(double value) {
     if (thermocoupleType != 0) {
+        if (labjack == nullptr) {
+            spdlog::error("Sensor '{}' is a thermocouple, but LabJack is not set!", name);
+            return;
+        }
         double cjcValue = labjack->getCJCValue();
         int err = INITIAL_ERR_ADDRESS;
         double newValue;
         err = LJM_TCVoltsToTemp(LJM_ttK, value, cjcValue, &newValue);
-        ErrorCheck(err, "LJM_TCVoltsToTemp");
+        // ErrorCheck(err, "LJM_TCVoltsToTemp"); TODO
         this->value = newValue - 273.15;
 
     } else if (multiplier != 1.0) {
@@ -69,6 +74,7 @@ void mach::Sensor::updateValue(double value) {
     } else {
         this->value = value;
     }
+    // spdlog::info("Sensor '{}' updated to value: {}", name, this->value); TODO
 }
 
 void mach::Sensor::print() {

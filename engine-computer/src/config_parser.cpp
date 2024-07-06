@@ -44,6 +44,8 @@ static void parseLabjackConfig(std::string file) {
     std::shared_ptr<LabJack> labJack = std::make_shared<LabJack>(name);
     DeviceManager& deviceManager = DeviceManager::getInstance();
     deviceManager.addLabJack(labJack);
+
+    spdlog::info("MACH: Reading valves from config file '{}'.", name);
     
     YAML::Node valves = config["valves"];
     for (YAML::const_iterator it = valves.begin(); it != valves.end(); it++) {
@@ -55,6 +57,8 @@ static void parseLabjackConfig(std::string file) {
         deviceManager.addDevice(valve);
     }
 
+    spdlog::info("MACH: Reading sensors from config file '{}'.", name);
+
     YAML::Node sensorsNode = config["sensors"];
     for (YAML::const_iterator it = sensorsNode.begin(); it != sensorsNode.end(); it++) {
         const YAML::Node sensorNode = *it;
@@ -63,7 +67,7 @@ static void parseLabjackConfig(std::string file) {
         std::shared_ptr<Sensor> sensor = std::make_shared<Sensor>(LABJACK, name, port);
 
         if (sensorNode["range"]) {
-            sensor->setRange(sensorNode["range"].as<int>());
+            sensor->setRange(sensorNode["range"].as<double>());
         }
         if (sensorNode["multiplier"]) {
             sensor->setMultiplier(sensorNode["multiplier"].as<double>());

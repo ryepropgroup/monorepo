@@ -16,7 +16,8 @@ mach::LabJack::LabJack(std::string labjackName) : labjackName(labjackName), hand
     spdlog::info("MACH: Connecting to LabJack with name '{}'.", labjackName);
     int err = INITIAL_ERR_ADDRESS;
     // err = LJM_Open(LJM_dtT7, LJM_ctUSB, labjackName.c_str(), &handle);
-    err = LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_DEMO_MODE, &handle);
+    err = LJM_Open(LJM_dtT7, LJM_ctUSB, 0, &handle);
+    // err = LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_DEMO_MODE, &handle); TODO
     ErrorCheck(err, "LJM_Open");
 }
 
@@ -31,8 +32,8 @@ void mach::LabJack::startStreaming() {
     // TODO Digital states...
     double scanRate = SCAN_RATE;
     std::unique_ptr<int[]> scanList = getScanList(sensors);
-    // err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
-    // ErrorCheck(err, "LJM_eStreamStart"); // TODO
+    err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
+    ErrorCheck(err, "LJM_eStreamStart"); // TODO
     spdlog::info("MACH: Successfully started stream for labjack '{}' with {} sensors at {}Hz.", getName(), sensors.size(), scanRate);
 }
 
@@ -40,8 +41,7 @@ void mach::LabJack::readStream() {
     int deviceBacklog = 0;
     int ljmBacklog = 0;
     int err = INITIAL_ERR_ADDRESS;
-    std::unique_ptr<double[]> data(new double[sensors.size()]);
-    memset(data.get(), 69, sizeof(double) * sensors.size());
+    std::unique_ptr<double[]> data(new double[sensors.size() + 1]);
     // err = LJM_eStreamRead(handle, data.get(), &deviceBacklog, &ljmBacklog);
     // ErrorCheck(err, "LJM_eStreamRead");
 
