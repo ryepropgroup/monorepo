@@ -6,11 +6,11 @@ steps:
     duration: 10
 
   - action: OPEN
-    valve: V21
+    valve: IGNITER
 
   - action: CHECK
-    valve: IGN
-    value: 365
+    sensor: IGN
+    threshold: 365
 
   - action: CLOSE
     valve: V34

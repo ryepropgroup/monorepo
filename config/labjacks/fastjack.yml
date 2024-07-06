@@ -1,0 +1,43 @@
+name: FastJack
+
+valves:
+  IGNITER: DIO6
+
+sensors:
+  - name: P20
+    port: AIN3
+    range: 10
+    multiplier: 100
+
+  - name: P30
+    port: AIN2
+    range: 10
+    multiplier: 100
+
+  - name: PINJ
+    port: AIN4
+    range: 10
+    multiplier: 100
+
+  - name: LC
+    port: AIN0
+    negative_channel: AIN1
+    multiplier: -200
+
+  - name: INJ1
+    port: AIN10
+    range: 0.1
+    negative_channel: AIN11
+    thermocouple: K
+
+  - name: INJ2
+    port: AIN8
+    range: 0.1
+    negative_channel: AIN9
+    thermocouple: K
+
+  - name: IGN
+    port: AIN6
+    range: 0.1
+    negative_channel: AIN7
+    thermocouple: K

@@ -33,11 +33,11 @@ include_directories(generated)
 
 # add executable
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
-    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp" 
-    "${PROJECT_SOURCE_DIR}/generated/*.*")
+    file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp"
+    "${PROJECT_SOURCE_DIR}/generated/*.cc" "${PROJECT_SOURCE_DIR}/vendor/labjack/*.cpp")
 else()
-    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/include/*.hpp" 
-    "${PROJECT_SOURCE_DIR}/generated/*.*")
+    file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp"
+    "${PROJECT_SOURCE_DIR}/generated/*.cc" "${PROJECT_SOURCE_DIR}/vendor/labjack/*.cpp")
 endif()
 add_executable(engine_computer ${SOURCES})
 
