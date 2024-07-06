@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net"
+	"time"
 
 	service "github.com/ryepropgroup/protoServer/protos"
 	messages "github.com/ryepropgroup/protoServer/protos/messages"
@@ -12,7 +13,7 @@ import (
 )
 
 type server struct {
-	service.UnimplementedServiceServer
+	service.UnimplementedEngineComputerServer
 	commandChan chan *messages.SequenceCommand
 	statusChan  chan *messages.SensorData
 }
@@ -24,7 +25,7 @@ func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *mess
 	}
 }
 
-func (s *server) SensorDataStream(stream service.Service_SensorDataStreamServer) error {
+func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStreamServer) error {
 	for {
 		data, err := stream.Recv()
 		if err != nil {
@@ -40,14 +41,18 @@ func (s *server) SensorDataStream(stream service.Service_SensorDataStreamServer)
 	}
 }
 
-func (s *server) CommandStream(info *messages.DeviceInformation, stream service.Service_CommandStreamServer) error {
-	for cmd := range s.commandChan {
-		if err := stream.Send(cmd); err != nil {
-			log.Printf("Error sending command: %v", err)
-			return err
-		}
+func (s *server) CommandStream(info *messages.DeviceInformation, stream service.EngineComputer_CommandStreamServer) error {
+	for {
+		stream.Send(&messages.SequenceCommand{Sequence: "ignition"})
+		time.Sleep(10 * time.Second)
 	}
-	return nil
+	// for cmd := range s.commandChan {
+	// 	if err := stream.Send(cmd); err != nil {
+	// 		log.Printf("Error sending command: %v", err)
+	// 		return err
+	// 	}
+	// }
+	// return nil
 }
 
 func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {
@@ -56,7 +61,7 @@ func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan
 		log.Fatalf("Failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	service.RegisterServiceServer(grpcServer, NewServer(commandChan, statusChan))
+	service.RegisterEngineComputerServer(grpcServer, NewServer(commandChan, statusChan))
 	reflection.Register(grpcServer)
 
 	log.Println("gRPC server listening on :50051")

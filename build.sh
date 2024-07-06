@@ -2,9 +2,13 @@
 
 export VCPKG_BUILD_TYPE=release
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+if [[ "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" ]]; then
+    cmd.exe /c .configurevs.bat
+
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "********** MACH: Configuring the build with CMake **********"
     cmake engine-computer --preset=linux
+
 else
     export CC=/opt/homebrew/bin/gcc-14
     export CXX=/opt/homebrew/bin/g++-14
@@ -26,17 +30,16 @@ fi
 case $(uname -s) in
     Linux*)     OSPATH=x64-linux;;
     Darwin*)    OSPATH=arm64-osx;;
-    *)          OSPATH=windows;;
+    *)          OSPATH=x64-windows;;
 esac
 
-mv ./engine-computer/build/vcpkg_installed/$OSPATH/tools "./"
+cp -r "./engine-computer/build/vcpkg_installed/$OSPATH/tools" "./"
 if [ $? -eq 0 ]; then
-    echo "Tools moved to $TOOLS_DIR"
+    echo "Vcpkg tools copied to $TOOLS_DIR"
 else
-    echo "Failed to move tools to $TOOLS_DIR"
+    echo "Failed to copy vcpkg tools to $TOOLS_DIR"
 fi
 
 cd ./engine-computer
 echo "********** MACH: Building the project **********"
-cmake --build build # -DCMAKE_BUILD_TYPE=MinSizeRel
-cp ./build/engine_computer ../build/bin
+cmake --build build --config release

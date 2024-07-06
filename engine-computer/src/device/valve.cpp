@@ -1,6 +1,6 @@
+#include "mach/device/valve.hpp"
 #include <string>
 #include <spdlog/spdlog.h>
-#include "mach/device/valve.hpp"
 #include "mach/device/device.hpp"
 
 bool mach::Valve::isOpen() {

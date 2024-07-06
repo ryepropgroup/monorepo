@@ -1,0 +1,53 @@
+name: SlowJack
+
+valves:
+  V11_NO: DIO0
+  V30: DIO1
+  V12_NO: DIO2
+  V31: DIO3
+  V20: DIO4
+  V32: DIO5
+  V21: DIO6
+  V33: DIO7
+  V35_NO: DIO8
+  V36: DIO9
+  V34: DIO10
+  V38_NO: DIO11
+  V37: DIO12
+  V23_NO: DIO13
+  V10: DIO14
+  V22: DIO15
+
+sensors:
+  - name: T1
+    port: AIN7
+    thermocouple_type: K
+
+  - name: T2
+    port: AIN9
+    thermocouple_type: K
+
+  - name: P10
+    port: AIN4
+    range: 10
+    multiplier: 300
+
+  - name: P21
+    port: AIN2
+    range: 10
+    multiplier: 300
+
+  - name: P31
+    port: AIN0
+    range: 10
+    multiplier: 300
+
+  - name: P22
+    port: AIN11
+    range: 10
+    multiplier: 300
+  
+  - name: P32
+    port: AIN3
+    range: 10
+    multiplier: 300

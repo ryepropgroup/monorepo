@@ -1,9 +1,9 @@
 steps:
   - action: OPEN
-    valve: DIO6
+    valve: IGNITER
 
   - action: SLEEP
     duration: 5
 
   - action: CLOSE
-    valve: DIO6
+    valve: IGNITER

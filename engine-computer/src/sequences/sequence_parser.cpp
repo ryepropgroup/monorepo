@@ -1,56 +1,60 @@
+#include "mach/sequences/sequence_parser.hpp"
 #include <memory>
-#include <regex>
-#include <yaml-cpp/yaml.h>
 #include <filesystem>
-#include "mach/labjack.hpp"
-#include "mach/device/valve.hpp"
-#include "mach/device/sensor.hpp"
-#include "mach/config_mapping.hpp"
+#include <yaml-cpp/yaml.h>
+#include <spdlog/spdlog.h>
+#include "mach/sequences/action_factory.hpp"
+#include "mach/sequences/sequence.hpp"
+#include "mach/sequences/sequence_manager.hpp"
 
-// #define SEQUENCES_FOLDER "../config/sequences/"
+namespace mach {
 
-// namespace mach {
+static void parseSequence(std::string file);
 
-// void parseSequences(LabJack &labJack) {
-    // if (!std::filesystem::exists(SEQUENCES_FOLDER)) {
-    //     throw std::runtime_error("Sequences folder file not found!");
-    // }
-    // std::filesystem::directory_iterator end_itr;
-    // for (std::filesystem::directory_iterator itr(SEQUENCES_FOLDER); itr != end_itr; ++itr) {
-    //     if (std::filesystem::is_regular_file(itr->path())) {
-    //         std::string file = itr->path().string();
-    //         if (file.find(".yml") != std::string::npos) {
-    //             parseSequence(labJack, file);
-    //         }
-    //     }
-    // }
-// }
+void parseAllSequences(const std::string sequencesFolder) {
+    if (!std::filesystem::exists(sequencesFolder)) {
+        spdlog::error("MACH: Sequences folder not found at '{}'!", sequencesFolder);
+        throw std::runtime_error("Sequences folder file not found!");
+    }
+    spdlog::info("MACH: Reading sequences from folder '{}'.", sequencesFolder);
 
-// void parseSequence(LabJack &labJack, std::string file) {
-    // YAML::Node config = YAML::LoadFile(file);
+    std::filesystem::directory_iterator end_itr;
+    for (std::filesystem::directory_iterator itr(sequencesFolder); itr != end_itr; ++itr) {
+        if (std::filesystem::is_regular_file(itr->path())) {
+            std::string file = itr->path().string();
+            if (file.ends_with(".yml")) {
+                parseSequence(file);
+            }
+        }
+    }
+}
+
+static void parseSequence(std::string file) {
+    YAML::Node config = YAML::LoadFile(file);
+
+    std::string sequenceName = file.substr(file.find_last_of("/\\") + 1);
+    sequenceName = sequenceName.substr(0, sequenceName.find_last_of("."));
+    std::unique_ptr<Sequence> sequence = std::make_unique<Sequence>(sequenceName);
+    spdlog::info("MACH: Parsing sequence from file '{}.yml'", sequenceName);
+
+    ActionFactory& actionFactory = ActionFactory::getInstance();
     
-    // YAML::Node valves = config["valves"];
-    // for (YAML::const_iterator it = valves.begin(); it != valves.end(); it++) {
-    //     std::string name = it->first.as<std::string>();
-    //     std::string port = it->second.as<std::string>();
-    //     labJack.addDevice(std::make_shared<mach::Valve>(name, port));
-    // }
+    YAML::Node steps = config["steps"];
+    for (YAML::const_iterator it = steps.begin(); it != steps.end(); it++) {
+        const YAML::Node actionNode = *it;
+        std::unique_ptr<Action> action = actionFactory.createAction(actionNode);
+        if (!action) {
+            YAML::Node invalid(actionNode);
+            spdlog::error("MACH: Invalid action defined in sequence file '{}' (see below)!\n{}", sequenceName, YAML::Dump(invalid));
+            throw std::runtime_error("Invalid action defined in sequence!");
+        }
+        sequence->addAction(std::move(action));
+    }
 
-    // YAML::Node sensors = config["sensors"];
-    // for (YAML::const_iterator it = sensors.begin(); it != sensors.end(); it++) {
-    //     const YAML::Node sensor = *it;
-    //     std::string name = sensor["name"].as<std::string>();
-    //     std::string port = sensor["port"].as<std::string>();
-    //     YAML::Node settingsNode = sensor["settings"];
-    //     std::vector<std::pair<std::string, std::string>> config;
-    //     for (YAML::const_iterator it = settingsNode.begin(); it != settingsNode.end(); it++) {
-    //         std::string configName = it->first.as<std::string>();
-    //         std::string configValue = it->second.as<std::string>();
-    //         config.emplace_back(configName, configValue);
-    //     }
-    //     std::pair<std::vector<std::string>, std::vector<double>> settings = convertConfigToLabjack(config, port);
-    //     labJack.addDevice(std::make_shared<mach::Sensor>(name, port, settings.first, settings.second));
-    // }
-// }
+    SequenceManager& sequenceManager = SequenceManager::getInstance();
+    sequenceManager.addSequence(sequenceName, std::move(sequence));
 
-// } // namespace mach
+    spdlog::info("MACH: Registered sequence: {}", sequenceName);
+}
+
+} // namespace mach

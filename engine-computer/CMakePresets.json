@@ -2,15 +2,21 @@
     "version": 2,
     "configurePresets": [
         {
-            "name": "windows",
-            "generator": "Ninja",
+            "name": "windows-x64",
+            "generator": "Visual Studio 16 2019",
             "binaryDir": "${sourceDir}/build",
+            "architecture": "x64",
+            "toolset": "host=x64",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vendor/vcpkg/scripts/buildsystems/vcpkg.cmake",
                 "CMAKE_CXX_COMPILER": "cl.exe",
                 "CMAKE_C_COMPILER": "cl.exe",
                 "VCPKG_MANIFEST_DIR": "${sourceDir}/..",
-                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg"
+                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg",
+                "VCPKG_HOST_TRIPLET": "x64-windows",
+                "VCPKG_TARGET_TRIPLET": "x64-windows",
+                "VCPKG_DEFAULT_TRIPLET": "x64-windows",
+                "VCPKG_BUILD_TYPE": "release"
             }
         },
         {
