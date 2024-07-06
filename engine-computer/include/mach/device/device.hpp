@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 
 namespace mach {
 
@@ -16,14 +17,14 @@ class Device {
         Device(DeviceType type, std::string name, std::string port) : type(type), name(name), port(port) {}
         virtual ~Device() = default;
         
-        virtual void setLabjack(LabJack& labjack);
+        virtual void setLabjack(std::shared_ptr<LabJack> labjack);
         virtual T getValue();
         virtual void print() = 0;
-        std::string getName() { return name; }
+        std::string getName();
 
     protected:
         DeviceType type;
-        LabJack* labjack;
+        std::shared_ptr<LabJack> labjack;
         std::string name;
         std::string port;
         T value;

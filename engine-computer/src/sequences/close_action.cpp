@@ -21,6 +21,7 @@ bool CloseAction::init(YAML::Node node) {
 }
 
 void CloseAction::execute() {
+    spdlog::info("MACH: Closing valve '{}'.", valve->getName());
     valve->close();
 }
 

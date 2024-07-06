@@ -7,7 +7,7 @@ namespace mach::util {
 
 const double* vectorToDouble(const std::vector<double> &doubleVector);
 
-const char** vectorToChar(const std::vector<std::string> &stringVector);
+std::unique_ptr<const char*[]> vectorToChar(const std::vector<std::string> &stringVector);
 
 bool sleepOrAbort(std::chrono::milliseconds duration);
 

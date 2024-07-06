@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "../labjack.hpp"
+#include "mach/device/device.hpp"
 
 namespace mach {
 

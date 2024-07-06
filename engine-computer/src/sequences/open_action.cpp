@@ -21,6 +21,7 @@ bool OpenAction::init(YAML::Node node) {
 }
 
 void OpenAction::execute() {
+    spdlog::info("MACH: Opening valve '{}'.", valve->getName());
     valve->open();
 }
 

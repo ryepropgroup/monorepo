@@ -4,14 +4,14 @@
 namespace mach {
 
 /**
- * Parses the configuration file, adding devices to the global DeviceManager, 
- * and registering devices with the given LabJack.
+ * @brief Parses the configuration file, registering a new labjack, 
+ * and adding its devices to the global DeviceManager.
  */
-void parseLabjackConfig(LabJack &labJack, std::string file);
+void parseAllLabjacks(std::string file);
 
 /**
- * Parses the configuration file, adding devices to the global DeviceManager
- * as remote devices (not attached to any LabJack instance).
+ * @brief Parses the configuration file, adding devices to the global 
+ * DeviceManager as remote devices (not attached to any LabJack instance).
  */
 void parseRemoteConfig(std::string file);
 

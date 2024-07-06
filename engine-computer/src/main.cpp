@@ -11,19 +11,17 @@
 #include "mach/sequences/close_action.hpp"
 #include "mach/sequences/sequence_parser.hpp"
 #include "mach/sequences/check_action.hpp"
+#include "mach/grpc_client.hpp"
 
-#define LABJACK_CONFIG std::string("config/labjack.yml")
+#define LABJACK_CONFIG std::string("config/labjacks/")
 #define REMOTE_CONFIG std::string("config/remote.yml")
 #define SEQUENCES_CONFIG std::string("config/sequences/")
 
-int main() {
+int main(int argc, char* argv[]) {
     spdlog::info("MACH: Hello World!");
 
-    // One LabJack for now.
-    mach::LabJack labJack("LabJack");
-
     // Read configuration 🤓
-    mach::parseLabjackConfig(labJack, LABJACK_CONFIG);
+    mach::parseAllLabjacks(LABJACK_CONFIG);
     mach::parseRemoteConfig(REMOTE_CONFIG);
 
     // Print all devices for debug.
@@ -39,4 +37,13 @@ int main() {
 
     // Parse all sequences.
     mach::parseAllSequences(SEQUENCES_CONFIG);
+
+    // Start streaming all LabJacks.
+    mach::DeviceManager::getInstance().startAllLabjackStreams();
+
+    // Start gRPC client.
+    // mach::grpcStartClient(argc, argv);
+
+    spdlog::info("MACH: Reached end of main."); //🧏‍♂️🤫
+    while (true) {}
 }

@@ -35,7 +35,19 @@ class SequenceManager {
          * @param sequenceName The name of the sequence to execute.
          */
         void executeSequence(const std::string& sequenceName) {
+            if (sequences.find(sequenceName) == sequences.end()) {
+                spdlog::warn("Sequence '{}' not found, ignoring!", sequenceName);
+                return;
+            }
             sequences[sequenceName]->execute();
+        }
+
+        std::vector<std::string> getSequenceNames() {
+            std::vector<std::string> sequenceNames;
+            for (const auto& sequence : sequences) {
+                sequenceNames.push_back(sequence.first);
+            }
+            return sequenceNames;
         }
     
     private:

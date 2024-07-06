@@ -21,6 +21,7 @@ bool SleepAction::init(YAML::Node node) {
 }
 
 void SleepAction::execute() {
+    spdlog::info("MACH: Sleeping for {} seconds.", duration);
     util::sleepOrAbort(std::chrono::milliseconds(static_cast<long>(duration * 1000.0)));
 }
 

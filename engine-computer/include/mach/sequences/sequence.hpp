@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include "mach/sequences/action.hpp"
 
 namespace mach {
