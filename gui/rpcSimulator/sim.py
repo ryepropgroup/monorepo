@@ -4,6 +4,7 @@ import service_pb2_grpc
 import messages_pb2
 import time
 import random
+import threading
 
 
 def generate_random_values():
@@ -47,6 +48,66 @@ def generate_random_values():
     }
 
 
+def run_sensor_data_stream(stub):
+    # Create a generator for sending sensor data
+    def sensor_data_generator():
+        while True:
+            json_data = generate_random_values()
+            data = messages_pb2.SensorData(
+                timestamp=int(time.time()),
+                values={
+                    "p1": json_data["lj"]["p10val"],
+                    "p2": json_data["lj"]["p21val"],
+                    "p3": json_data["lj"]["p31val"],
+                    "p20": json_data["lj"]["p20val"],
+                    "p30": json_data["lj"]["p30val"],
+                    "p22": json_data["lj"]["p22val"],
+                    "p32": json_data["lj"]["p32val"],
+                    "t2": json_data["lj"]["t1val"],
+                    "t3": json_data["lj"]["t2val"],
+                    "pinJ": json_data["lj"]["pinjval"],
+                    "lc": json_data["lj"]["lcval"],
+                    "inj1": json_data["lj"]["inj1val"],
+                    "inj2": json_data["lj"]["inj2val"],
+                    "ign": json_data["lj"]["ignval"],
+                    "v11_no": json_data["valves"]["V11_NO"],
+                    "v10": json_data["valves"]["V10"],
+                    "v12_no": json_data["valves"]["V12_NO"],
+                    "v20": json_data["valves"]["V20"],
+                    "v21": json_data["valves"]["V21"],
+                    "v22": json_data["valves"]["V22"],
+                    "v23": json_data["valves"]["V23_NO"],
+                    "v30": json_data["valves"]["V30"],
+                    "v31": json_data["valves"]["V31"],
+                    "v32": json_data["valves"]["V32"],
+                    "v33": json_data["valves"]["V33"],
+                    "v34": json_data["valves"]["V34"],
+                    "v35_no": json_data["valves"]["V35_NO"],
+                    "v36": json_data["valves"]["V36"],
+                    "v37": json_data["valves"]["V37"],
+                    "v38_no": json_data["valves"]["V38_NO"],
+                    "igniter": json_data["valves"]["IGN"],
+                    "fileWriteState": json_data["writing"],
+                },
+            )
+            yield data
+            time.sleep(0.5)
+
+    # Send the sensor data to the server
+    stub.SensorDataStream(sensor_data_generator())
+
+
+def run_command_stream(stub):
+    device_info = messages_pb2.DeviceInformation()  # Empty DeviceInformation
+
+    # Send the DeviceInformation message
+    command_stream = stub.CommandStream(device_info)
+
+    # Process the commands received from the server
+    for command in command_stream:
+        print("Received command from server:", command)
+
+
 def run():
     # Create a channel to the server
     channel = grpc.insecure_channel("localhost:50051")
@@ -54,55 +115,17 @@ def run():
     # Create a stub (client)
     stub = service_pb2_grpc.EngineComputerStub(channel)
 
-    # Create a generator for sending sensor data
-    def sensor_data_generator():
-        while True:  # Send 10 random data points
-            json_data = generate_random_values()
-            data = messages_pb2.SensorData(
-                timestamp=int(time.time()),
-                values={
-                    "p1_val": json_data["lj"]["p10val"],
-                    "p2_val": json_data["lj"]["p21val"],
-                    "p3_val": json_data["lj"]["p31val"],
-                    "p20_val": json_data["lj"]["p20val"],
-                    "p30_val": json_data["lj"]["p30val"],
-                    "p22_val": json_data["lj"]["p22val"],
-                    "p32_val": json_data["lj"]["p32val"],
-                    "t2_thermo": json_data["lj"]["t1val"],
-                    "t3_thermo": json_data["lj"]["t2val"],
-                    "pinJval": json_data["lj"]["pinjval"],
-                    "lcval": json_data["lj"]["lcval"],
-                    "inj1val": json_data["lj"]["inj1val"],
-                    "inj2val": json_data["lj"]["inj2val"],
-                    "ignVal": json_data["lj"]["ignval"],
-                    "v11_s": json_data["valves"]["V11_NO"],
-                    "v10_sb": json_data["valves"]["V10"],
-                    "v12_s": json_data["valves"]["V12_NO"],
-                    "v20_sb": json_data["valves"]["V20"],
-                    "v21_sb": json_data["valves"]["V21"],
-                    "v22_sb": json_data["valves"]["V22"],
-                    "v23_sb": json_data["valves"]["V23_NO"],
-                    "v30_sb": json_data["valves"]["V30"],
-                    "v31_sb": json_data["valves"]["V31"],
-                    "v32_s": json_data["valves"]["V32"],
-                    "v33_sb": json_data["valves"]["V33"],
-                    "v34_s": json_data["valves"]["V34"],
-                    "v35_sb": json_data["valves"]["V35_NO"],
-                    "v36_s": json_data["valves"]["V36"],
-                    "v37_sb": json_data["valves"]["V37"],
-                    "v38_s": json_data["valves"]["V38_NO"],
-                    "v_ign": json_data["valves"]["IGN"],
-                    "fileWriteState": json_data["writing"],
-                },
-            )
-            yield data
-            time.sleep(0.5)
+    # Create threads for sensor data stream and command stream
+    sensor_thread = threading.Thread(target=run_sensor_data_stream, args=(stub,))
+    command_thread = threading.Thread(target=run_command_stream, args=(stub,))
 
-    # Send the sensor data to the server and get the response
-    response = stub.SensorDataStream(sensor_data_generator())
+    # Start the threads
+    sensor_thread.start()
+    command_thread.start()
 
-    # Print the response from the server
-    print("Response from server:", response)
+    # Wait for threads to complete (in this case, they won't, but join them anyway)
+    sensor_thread.join()
+    command_thread.join()
 
 
 if __name__ == "__main__":

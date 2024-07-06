@@ -15,36 +15,44 @@ PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar ch
 
 # Example coordinates (to be adjusted based on visual inspection)
 button_positions = {
-    "v11_s": (185, 420),
-    "v10_sb": (297, 235),
-    "v12_s": (300, 420),
-    "v20_sb": (946, 95),
-    "v21_sb": (487, 266),
-    "v22_sb": (784, 17),
-    "v23_sb": (600, 92),
-    "v30_sb": (945, 405),
-    "v31_sb": (488, 558),
-    "v32_s": (486, 396),
-    "v33_sb": (707, 455),
-    "v34_s": (558, 326),
-    "v35_sb": (484, 644),
-    "v36_s": (629, 642),
-    "v37_sb": (729, 598),
-    "v38_s": (820, 659),
+    "v11_no": (185, 420),
+    "v10": (297, 235),
+    "v12_no": (300, 420),
+    "v20": (946, 95),
+    "v21": (487, 266),
+    "v22": (784, 17),
+    "v23": (600, 92),
+    "v30": (945, 405),
+    "v31": (488, 558),
+    "v32": (486, 396),
+    "v33": (707, 455),
+    "v34": (558, 326),
+    "v35_no": (484, 644),
+    "v36": (629, 642),
+    "v37": (729, 598),
+    "v38_no": (820, 659),
 }
 
 progress_bar_positions = {
-    "p1_val": (146, 261, "horizontal", 2500),
-    "p2_val": (818, 250, "horizontal", 2500),
-    "p3_val": (817, 399, "horizontal", 2500),
-    "p20_val": (1122, 161, "horizontal", 2500),
-    "p30_val": (1142, 437, "horizontal", 2500),
-    "p22_val": (954, 230, "horizontal", 2500),
-    "p32_val": (914, 337, "horizontal", 2500),
-    "t2_thermo": (729, 227, "vertical", 1000),
-    "t3_thermo": (639, 378, "vertical", 1000),
-    # "pinJval": (300, 500, "horizontal"),
-    # "lcval": (300, 500, "horizontal"),
+    "p1": (146, 261, "horizontal", 2500),
+    "p2": (818, 250, "horizontal", 2500),
+    "p3": (817, 399, "horizontal", 2500),
+    "p20": (1122, 161, "horizontal", 2500),
+    "p30": (1142, 437, "horizontal", 2500),
+    "p22": (954, 230, "horizontal", 2500),
+    "p32": (914, 337, "horizontal", 2500),
+    "t2": (729, 227, "vertical", 1000),
+    "t3": (639, 378, "vertical", 1000),
+    # "pinJ": (300, 500, "horizontal"),
+    # "lc": (300, 500, "horizontal"),
+}
+
+sequence_positions ={
+    "stop": (65,600),
+    "ignition": (135,600),
+    "igniter": (205,600),
+    "oxidizer": (275,600),
+    "alternate_oxidizer": (345,600),
 }
 
 class GUIApp:
@@ -91,6 +99,18 @@ class GUIApp:
             justify="center",
         )
 
+        style.configure(
+            "Sequence.TButton",
+            relief="flat",
+            borderwidth=1,
+            padding=5,
+            font=("Helvetica", 10),
+            focuscolor="none",
+            background="#FF5733",
+            foreground="white",
+            anchor="center",
+            justify="center",
+        )
         # Custom style for close button
         style.configure(
             "Close.TButton",
@@ -128,6 +148,18 @@ class GUIApp:
 
             self.valve_buttons[valve] = (open_btn, close_btn)
 
+        self.sequence_buttons = {}
+
+        for button, (x, y) in sequence_positions.items():
+            button = ttk.Button(
+                self.root,
+                text=button,
+                style="Sequence.TButton",
+                command=lambda v=button: self.send_message(f"sequence:{v}\n"),
+            )
+            button.place(x=x, y=y, width=70, height=25)
+            self.sequence_buttons[button] = button
+
         # Creating progress bars
         self.sensor_bars = {}
         self.sensor_labels = {}
@@ -163,10 +195,16 @@ class GUIApp:
             self.sensor_labels[sensor] = label
 
     def control_valve(self, valve, state):
-        if state == True:
-            state = "close"
+        if "_no" in valve:
+            if state == True:
+                state = "close"
+            else:
+                state = "open"
         else:
-            state = "open"
+            if state == True:
+                state = "open"
+            else:
+                state = "close"
         message = f"valve:{valve}:{state}\n"
         self.send_message(message)
 
@@ -203,12 +241,14 @@ class GUIApp:
             if valve.startswith("v"):
                 open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
                 if open_btn and close_btn:
+                    if "_no" in valve:
+                        state = not state
                     if state:
-                        open_btn.config(state="disabled", bootstyle="secondary")
-                        close_btn.config(state="normal", bootstyle="danger")
+                        open_btn.config(state="disabled")
+                        close_btn.config(state="normal")
                     else:
-                        open_btn.config(state="normal", bootstyle="success")
-                        close_btn.config(state="disabled", bootstyle="secondary")
+                        open_btn.config(state="normal")
+                        close_btn.config(state="disabled")
 
         for sensor, value in values.items():
             if sensor.startswith("p") or sensor.startswith("t"):
