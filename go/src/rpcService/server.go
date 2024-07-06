@@ -2,6 +2,7 @@ package rpcService
 
 import (
 	"context"
+	"io"
 	"log"
 	"net"
 	"time"
@@ -28,6 +29,10 @@ func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *mess
 func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStreamServer) error {
 	for {
 		data, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("SensorDataStream: client disconnected")
+			return nil
+		}
 		if err != nil {
 			if err == context.Canceled {
 				return nil
