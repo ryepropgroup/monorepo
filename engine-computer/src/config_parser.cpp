@@ -54,6 +54,7 @@ static void parseLabjackConfig(std::string file) {
 
         std::shared_ptr<Valve> valve = std::make_shared<Valve>(LABJACK, name, port);
         valve->setLabjack(labJack);
+        labJack->addValve(valve);
         deviceManager.addDevice(valve);
     }
 

@@ -2,10 +2,12 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace mach {
 
 class Sensor;
+class Valve;
 
 class LabJack {
     public:
@@ -18,6 +20,8 @@ class LabJack {
         void startStreaming();
         void readStream();
         void addSensor(std::shared_ptr<Sensor> sensor);
+        void addValve(std::shared_ptr<Valve> valve);
+        std::shared_ptr<Valve> getValve(int dioPin);
         void setHigh(std::string port);
         void setLow(std::string port);
         std::string getName() { return labjackName; }
@@ -28,6 +32,7 @@ class LabJack {
         std::string labjackName;
         int handle;
         std::vector<std::shared_ptr<Sensor>> sensors;
+        std::unordered_map<int, std::shared_ptr<Valve>> valves;
         double cjcValue = 0;
 };
 

@@ -1,6 +1,7 @@
 #include "mach/grpc_client.hpp"
 #include <iostream>
 #include <thread>
+#include <chrono>
 #include <spdlog/spdlog.h>
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -8,10 +9,37 @@
 #include "mach/sequences/sequence_manager.hpp"
 #include "mach/device/device_manager.hpp"
 #include "mach/executor.hpp"
+#include "mach/thread_safe_queue.hpp"
 
-ABSL_FLAG(std::string, target, "localhost:50051", "Server address");
+ABSL_FLAG(std::string, target, "100.69.7.77:50051", "Server address");
 
 static void startServerThread(std::string target);
+
+// rpc SensorDataStream (stream SensorData) returns (Response) {}
+void mach::ServiceClient::StartSensorDataStream() {
+    grpc::ClientContext context;
+    mach::proto::Response response;
+    std::unique_ptr<grpc::ClientWriter<mach::proto::SensorData>> stream(stub_->SensorDataStream(&context, &response));
+
+    spdlog::info("MACH: Started sensor data stream.");
+
+    while (true) {
+        std::pair<long, std::unordered_map<std::string, float>> data = mach::sensorQueue.pop();
+        mach::proto::SensorData sensorData;
+        sensorData.set_timestamp(data.first);
+        for (const auto& [key, value] : data.second) {
+            // message SensorData {
+            //     int64 timestamp = 1;
+            //     map<string, float> values = 2;
+            // }
+            sensorData.mutable_values()->insert({key, value});
+        }
+        stream->Write(sensorData);
+
+        // mach::proto::Response response;
+        // stream->Read(&response);
+    }
+}
 
 void mach::ServiceClient::StartCommandStream() {
     // Data we are sending to the server.
@@ -35,7 +63,34 @@ void mach::ServiceClient::StartCommandStream() {
     mach::proto::SequenceCommand sequence;
     while (reader->Read(&sequence)) {
         spdlog::info("MACH: Received sequence command: {}", sequence.sequence());
-        mach::Executor::getInstance().executeSequence(sequence.sequence());
+
+        // Commands:
+        // valve:V##_s:open
+        // valve:V##_sb:close
+        // sequence:###
+        std::string type = sequence.sequence().substr(0, sequence.sequence().find(":"));
+        if (type == "valve") {
+            std::string valveName = sequence.sequence().substr(sequence.sequence().find(":") + 1, sequence.sequence().find(":", sequence.sequence().find(":") + 1) - sequence.sequence().find(":") - 1);
+            valveName = valveName.substr(0, valveName.find("_"));
+            std::transform(valveName.begin(), valveName.end(), valveName.begin(), ::toupper);
+
+            std::string command = sequence.sequence().substr(sequence.sequence().find(":", sequence.sequence().find(":") + 1) + 1);
+            std::shared_ptr<Valve> valve = mach::DeviceManager::getInstance().getValve(valveName);
+            if (command == "open") {
+                spdlog::info("MACH: Opening valve '{}'", valveName);
+                valve->open();
+            } else if (command == "close") {
+                spdlog::info("MACH: Closing valve '{}'", valveName);
+                valve->close();
+            } else {
+                spdlog::warn("MACH: Unknown valve command '{}', ignoring!", command);
+            }
+        } else if (type == "sequence") {
+            std::string sequenceName = sequence.sequence().substr(sequence.sequence().find(":") + 1);
+            mach::SequenceManager::getInstance().executeSequence(sequenceName);
+        } else {
+            spdlog::warn("MACH: Unknown command type '{}', ignoring!", type);
+        }
     }
     spdlog::info("MACH: GRPC client finished.");
 }
@@ -56,4 +111,10 @@ static void startServerThread(std::string target) {
     spdlog::info("MACH: Starting GRPC client on '{}'", target);
     mach::ServiceClient serviceClient(grpc::CreateChannel(target, grpc::InsecureChannelCredentials()));
     serviceClient.StartCommandStream();
+    serviceClient.StartSensorDataStream();
+}
+
+void mach::addSensorData(std::unordered_map<std::string, float> data) {
+    long timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    mach::sensorQueue.push(std::make_pair(timestamp, data));
 }

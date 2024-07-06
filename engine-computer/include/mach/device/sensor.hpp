@@ -9,7 +9,6 @@ namespace mach {
 class Sensor : public Device<double> {
     public:
         std::pair<std::vector<std::string>, std::vector<double>> labJackSettings;
-        int labJackPin;
 
         Sensor(DeviceType type, std::string name, std::string port);
 

@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     mach::DeviceManager::getInstance().startAllLabjackStreams();
 
     // Start gRPC client.
-    // mach::grpcStartClient(argc, argv);
+    mach::grpcStartClient(argc, argv);
 
     spdlog::info("MACH: Reached end of main."); //🧏‍♂️🤫
     while (true) {}

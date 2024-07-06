@@ -3,13 +3,18 @@
 #include <string>
 #include <grpcpp/grpcpp.h>
 #include "service.grpc.pb.h"
+#include "mach/thread_safe_queue.hpp"
 
 namespace mach {
+
+static ThreadSafeQueue<std::pair<long, std::unordered_map<std::string, float>>> sensorQueue;  
 
 class ServiceClient {
 
 public:
     ServiceClient(std::shared_ptr<grpc::Channel> channel) : stub_(mach::proto::EngineComputer::NewStub(channel)) {}
+
+    void StartSensorDataStream();
 
     void StartCommandStream();
 
@@ -18,5 +23,7 @@ private:
 };
 
 void grpcStartClient(int argc, char **argv);
+
+void addSensorData(std::unordered_map<std::string, float> data);
 
 } // namespace mach;

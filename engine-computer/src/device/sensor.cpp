@@ -9,17 +9,8 @@
 #include "../../vendor/labjack/LabJackM.h"
 
 mach::Sensor::Sensor(DeviceType type, std::string name, std::string port) : 
-        Device(type, name, port), labJackPin(-1) {
+        Device(type, name, port) {
     this->value = 0.0;
-
-    if (type == LABJACK) {
-        // Convert AIN# to an integer.
-        if (port.length() <= std::string{"AIN"}.length() || !port.starts_with("AIN")) {
-            spdlog::error("Invalid sensor port value: {}!", port);
-            throw std::invalid_argument("Invalid sensor port value!");
-        }
-        this->labJackPin = std::stoi(port.substr(std::string{"AIN"}.length()));
-    }
 }
 
 void mach::Sensor::setLabjack(std::shared_ptr<LabJack> labjack) {
@@ -65,15 +56,15 @@ void mach::Sensor::updateValue(double value) {
         int err = INITIAL_ERR_ADDRESS;
         double newValue;
         err = LJM_TCVoltsToTemp(LJM_ttK, value, cjcValue, &newValue);
-        // ErrorCheck(err, "LJM_TCVoltsToTemp"); TODO
+        // ErrorCheck(err, "LJM_TCVoltsToTemp"); // TODO
         this->value = newValue - 273.15;
-
+        return;
     } else if (multiplier != 1.0) {
         this->value = value * multiplier;
-
-    } else {
-        this->value = value;
+        return;
     }
+    mach::Device<double>::updateValue(value);
+
     // spdlog::info("Sensor '{}' updated to value: {}", name, this->value); TODO
 }
 
