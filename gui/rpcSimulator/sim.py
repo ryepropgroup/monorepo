@@ -94,7 +94,7 @@ def run():
                 }
             )
             yield data
-            time.sleep(1)
+            time.sleep(0.5)
 
     # Send the sensor data to the server and get the response
     response = stub.SensorDataStream(sensor_data_generator())
