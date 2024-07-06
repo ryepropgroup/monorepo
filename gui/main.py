@@ -34,15 +34,15 @@ button_positions = {
 }
 
 progress_bar_positions = {
-    "p1_val": (146, 261, "horizontal"),
-    "p2_val": (818, 250, "horizontal"),
-    "p3_val": (817, 399, "vertical"),
-    "p20_val": (1122, 161, "horizontal"),
-    "p30_val": (1142, 437, "horizontal"),
-    "p22_val": (954, 230, "horizontal"),
-    "p32_val": (914, 337, "horizontal"),
-    "t2_thermo": (734, 230, "vertical"),
-    "t3_thermo": (639, 378, "vertical"),
+    "p1_val": (146, 261, "horizontal", 2500),
+    "p2_val": (818, 250, "horizontal", 2500),
+    "p3_val": (817, 399, "horizontal", 2500),
+    "p20_val": (1122, 161, "horizontal", 2500),
+    "p30_val": (1142, 437, "horizontal", 2500),
+    "p22_val": (954, 230, "horizontal", 2500),
+    "p32_val": (914, 337, "horizontal", 2500),
+    "t2_thermo": (729, 227, "vertical", 1000),
+    "t3_thermo": (639, 378, "vertical", 1000),
     # "pinJval": (300, 500, "horizontal"),
     # "lcval": (300, 500, "horizontal"),
 }
@@ -131,12 +131,12 @@ class GUIApp:
         # Creating progress bars
         self.sensor_bars = {}
         self.sensor_labels = {}
-        for sensor, (x, y, orientation) in progress_bar_positions.items():
+        for sensor, (x, y, orientation, maxval) in progress_bar_positions.items():
             if orientation == "vertical":
                 bar = ttk.Progressbar(
-                    self.root, orient="vertical", mode="determinate", maximum=100
+                    self.root, orient="vertical", mode="determinate", maximum=maxval
                 )
-                bar.place(x=x, y=y, height=100, width=PROGRESS_BAR_WIDTH)
+                bar.place(x=x, y=y, height=88, width=PROGRESS_BAR_WIDTH)
                 label = ttk.Label(
                     self.root,
                     text="0.00",
@@ -144,10 +144,10 @@ class GUIApp:
                     background="#333",
                     foreground="white",
                 )
-                label.place(x=x + PROGRESS_BAR_WIDTH // 2, y=y + 110, anchor="center")
+                label.place(x=x + PROGRESS_BAR_WIDTH // 2, y=y + 90, anchor="center")
             else:
                 bar = ttk.Progressbar(
-                    self.root, orient="horizontal", mode="determinate", maximum=100
+                    self.root, orient="horizontal", mode="determinate", maximum=maxval
                 )
                 bar.place(x=x, y=y, width=95, height=PROGRESS_BAR_WIDTH)
                 label = ttk.Label(
@@ -193,7 +193,7 @@ class GUIApp:
                         close_btn.config(state="disabled", bootstyle="secondary")
 
         for sensor, value in values.items():
-            if sensor.startswith("p"):
+            if sensor.startswith("p") or sensor.startswith("t"):
                 bar = self.sensor_bars.get(sensor)
                 label = self.sensor_labels.get(sensor)
                 if bar and label:
