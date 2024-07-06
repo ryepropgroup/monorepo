@@ -1,9 +1,11 @@
 syntax = "proto3";
 
-import "messages.proto";
+package mach.proto;
 option go_package = "github.com/ryepropgroup/protoServer/protos/service";
 
-service Service {
+import "messages.proto";
+
+service EngineComputer {
     // stream of sensor data from engine-computer to Go
     rpc SensorDataStream (stream SensorData) returns (Response) {}
 
