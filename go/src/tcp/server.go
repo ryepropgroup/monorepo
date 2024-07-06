@@ -30,7 +30,13 @@ func NewTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *m
 }
 
 func (s *TCPServer) handleConnection(conn net.Conn) {
-	defer conn.Close()
+	defer func() {
+		s.mu.Lock()
+		delete(s.clients, conn)
+		s.mu.Unlock()
+		conn.Close()
+		log.Println("TCP client disconnected")
+	}()
 	s.mu.Lock()
 	s.clients[conn] = struct{}{}
 	s.mu.Unlock()

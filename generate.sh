@@ -9,6 +9,7 @@ MESSAGES_PROTO="$PROTO_DIR/messages.proto"
 GO_PROJ_DIR="./go/src/protos"
 GO_PROJ_DIR_MSG=$GO_PROJ_DIR"/messages"
 CPP_OUT_DIR="./engine-computer/generated"
+PYTHON_OUT_DIR="./gui/rpcSimulator"
 
 mkdir -p $GO_PROJ_DIR
 mkdir -p $GO_PROJ_DIR_MSG
@@ -18,6 +19,10 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 export PATH=$PATH:$(go env GOPATH)/bin
 source ~/.bashrc
+
+source ./gui/venv/bin/activate
+python -m grpc_tools.protoc -I=protobuf --python_out=$PYTHON_OUT_DIR --grpc_python_out=$PYTHON_OUT_DIR $MAIN_PROTO
+python -m grpc_tools.protoc -I=protobuf --python_out=$PYTHON_OUT_DIR $MESSAGES_PROTO
 
 # Verify installation
 if ! command -v protoc-gen-go &> /dev/null; then
