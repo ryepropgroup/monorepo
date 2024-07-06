@@ -163,19 +163,37 @@ class GUIApp:
             self.sensor_labels[sensor] = label
 
     def control_valve(self, valve, state):
-        # Send valve control command to server
-        pass  # Implementation depends on server protocol
+        if state == True:
+            state = "close"
+        else:
+            state = "open"
+        message = f"valve:{valve}:{state}\n"
+        self.send_message(message)
+
+    def send_message(self, message):
+        if hasattr(self, 'sock') and self.sock:
+            try:
+                self.sock.sendall(message.encode('utf-8'))
+            except ConnectionError as e:
+                print(f"Connection error: {e}")
 
     def start_tcp_communication(self):
-        threading.Thread(target=self.tcp_communication_thread, daemon=True).start()
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.sock.connect((TCP_SERVER_IP, TCP_SERVER_PORT))
+            threading.Thread(target=self.tcp_communication_thread, daemon=True).start()
+        except ConnectionError as e:
+            print(f"Failed to connect to server: {e}")
 
     def tcp_communication_thread(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.connect((TCP_SERVER_IP, TCP_SERVER_PORT))
-            while True:
-                data = sock.recv(1024)
+        while True:
+            try:
+                data = self.sock.recv(1024)
                 if data:
-                    self.update_gui(data.decode('utf-8'))
+                    self.update_gui(data.decode("utf-8"))
+            except ConnectionError as e:
+                print(f"Connection error: {e}")
+                break
 
     def update_gui(self, data):
         data = json.loads(data)

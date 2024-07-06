@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net"
-	"time"
 
 	service "github.com/ryepropgroup/protoServer/protos"
 	messages "github.com/ryepropgroup/protoServer/protos/messages"
@@ -37,7 +36,7 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 			if err == context.Canceled {
 				return nil
 			}
-			log.Printf("Error receiving sensor data: %v", err)
+			log.Printf("Error: %v", err)
 			return err
 		}
 
@@ -47,17 +46,17 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 }
 
 func (s *server) CommandStream(info *messages.DeviceInformation, stream service.EngineComputer_CommandStreamServer) error {
-	for {
-		stream.Send(&messages.SequenceCommand{Sequence: "ignition"})
-		time.Sleep(10 * time.Second)
-	}
-	// for cmd := range s.commandChan {
-	// 	if err := stream.Send(cmd); err != nil {
-	// 		log.Printf("Error sending command: %v", err)
-	// 		return err
-	// 	}
+	// for {
+	// 	stream.Send(&messages.SequenceCommand{Sequence: "ignition"})
+	// 	time.Sleep(10 * time.Second)
 	// }
-	// return nil
+	for cmd := range s.commandChan {
+		if err := stream.Send(cmd); err != nil {
+			log.Printf("Error sending command: %v", err)
+			return err
+		}
+	}
+	return nil
 }
 
 func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {

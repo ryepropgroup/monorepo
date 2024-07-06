@@ -49,15 +49,10 @@ func (s *TCPServer) handleConnection(conn net.Conn) {
 			break
 		}
 		msg = strings.TrimSpace(msg)
-		parts := strings.SplitN(msg, ":", 2)
-		if len(parts) != 2 {
-			log.Printf("Invalid command format: %s", msg)
-			continue
-		}
 		fmt.Println(msg)
 
 		cmd := &messages.SequenceCommand{
-			Sequence: parts[1],
+			Sequence: msg,
 		}
 
 		// Send command to gRPC server
