@@ -5,12 +5,12 @@ steps:
   - action: SLEEP
     duration: 10
 
-  - action: OPEN
-    valve: IGNITER
+  # - action: OPEN
+  #   valve: IGNITER
 
-  - action: CHECK
-    sensor: IGN
-    threshold: 365
+  # - action: CHECK
+  #   sensor: IGN
+  #   threshold: 365
 
   - action: CLOSE
     valve: V34

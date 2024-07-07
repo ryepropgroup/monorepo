@@ -12,3 +12,4 @@ gui/rpcSimulator/__pycache__/*
 gui/.venv/
 protobuf/cpp
 go/src/go.sum
+gui/.swp

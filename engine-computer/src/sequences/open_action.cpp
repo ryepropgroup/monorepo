@@ -22,7 +22,15 @@ bool OpenAction::init(YAML::Node node) {
 
 void OpenAction::execute() {
     spdlog::info("MACH: Opening valve '{}'.", valve->getName());
-    valve->open();
+    if (valve->getName().ends_with("NO")) {
+        valve->open();
+    } else {
+        valve->close();
+    }
+}
+
+void OpenAction::setValve(std::shared_ptr<Valve> valve) {
+    this->valve = valve;
 }
 
 } // namespace mach

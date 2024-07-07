@@ -26,23 +26,23 @@ steps:
   - action: CLOSE
     valve: V37
 
-  - action: CLOSE
+  - action: OPEN
     valve: V11_NO
 
-  - action: CLOSE
+  - action: OPEN
     valve: V12_NO
 
   - action: CLOSE
     valve: V22
 
-  - action: CLOSE
+  - action: OPEN
     valve: V23_NO
 
   - action: CLOSE
     valve: V33
 
-  - action: CLOSE
+  - action: OPEN
     valve: V35_NO
 
-  - action: CLOSE
+  - action: OPEN
     valve: V38_NO

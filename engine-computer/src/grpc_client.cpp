@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <functional>
 #include <spdlog/spdlog.h>
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -10,6 +11,8 @@
 #include "mach/device/device_manager.hpp"
 #include "mach/executor.hpp"
 #include "mach/thread_safe_queue.hpp"
+#include "mach/sequences/open_action.hpp"
+#include "mach/sequences/close_action.hpp"
 
 ABSL_FLAG(std::string, target, "100.69.7.77:50051", "Server address");
 
@@ -25,6 +28,8 @@ void mach::ServiceClient::StartSensorDataStream() {
 
     while (true) {
         std::pair<long, std::unordered_map<std::string, float>> data = mach::sensorQueue.pop();
+
+
         mach::proto::SensorData sensorData;
         sensorData.set_timestamp(data.first);
         for (const auto& [key, value] : data.second) {
@@ -71,17 +76,23 @@ void mach::ServiceClient::StartCommandStream() {
         std::string type = sequence.sequence().substr(0, sequence.sequence().find(":"));
         if (type == "valve") {
             std::string valveName = sequence.sequence().substr(sequence.sequence().find(":") + 1, sequence.sequence().find(":", sequence.sequence().find(":") + 1) - sequence.sequence().find(":") - 1);
-            valveName = valveName.substr(0, valveName.find("_"));
+            // valveName = valveName.substr(0, valveName.find("_"));
             std::transform(valveName.begin(), valveName.end(), valveName.begin(), ::toupper);
 
             std::string command = sequence.sequence().substr(sequence.sequence().find(":", sequence.sequence().find(":") + 1) + 1);
             std::shared_ptr<Valve> valve = mach::DeviceManager::getInstance().getValve(valveName);
-            if (command == "open") {
+            if (valve == nullptr) {
+                spdlog::warn("MACH: Bad valve command for '{}'", valveName);
+            } else if (command == "open") {
                 spdlog::info("MACH: Opening valve '{}'", valveName);
-                valve->open();
+                OpenAction action;
+                action.setValve(valve);
+                action.execute();
             } else if (command == "close") {
                 spdlog::info("MACH: Closing valve '{}'", valveName);
-                valve->close();
+                CloseAction action;
+                action.setValve(valve);
+                action.execute();
             } else {
                 spdlog::warn("MACH: Unknown valve command '{}', ignoring!", command);
             }
@@ -105,13 +116,27 @@ void mach::grpcStartClient(int argc, char **argv) {
     std::thread(startServerThread, target_str).detach();
 }
 
-static void startServerThread(std::string target) {
-    // We indicate that the channel isn't authenticated (use of
-    // InsecureChannelCredentials()).
+static void startCommandStream(std::string target) {
     spdlog::info("MACH: Starting GRPC client on '{}'", target);
     mach::ServiceClient serviceClient(grpc::CreateChannel(target, grpc::InsecureChannelCredentials()));
     serviceClient.StartCommandStream();
+}
+
+static void startSensorDataStream(std::string target) {
+    spdlog::info("MACH: Starting GRPC client on '{}'", target);
+    mach::ServiceClient serviceClient(grpc::CreateChannel(target, grpc::InsecureChannelCredentials()));
     serviceClient.StartSensorDataStream();
+}
+
+static void startServerThread(std::string target) {
+    // We indicate that the channel isn't authenticated (use of
+    // InsecureChannelCredentials()).
+    // spdlog::info("MACH: Starting GRPC client on '{}'", target);
+    // mach::ServiceClient serviceClient(grpc::CreateChannel(target, grpc::InsecureChannelCredentials()));
+    
+    std::thread(startCommandStream, target).detach();
+    // std::thread(startSensorDataStream, target).detach(); // TODO
+    // startSensorDataStream(serviceClient);
 }
 
 void mach::addSensorData(std::unordered_map<std::string, float> data) {

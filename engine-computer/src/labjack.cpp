@@ -19,9 +19,9 @@ static std::unique_ptr<int[]> getScanList(std::vector<std::shared_ptr<mach::Sens
 mach::LabJack::LabJack(std::string labjackName) : labjackName(labjackName), handle(-1) {
     spdlog::info("MACH: Connecting to LabJack with name '{}'.", labjackName);
     int err = INITIAL_ERR_ADDRESS;
-    // err = LJM_Open(LJM_dtT7, LJM_ctUSB, labjackName.c_str(), &handle);
+    err = LJM_Open(LJM_dtT7, LJM_ctUSB, labjackName.c_str(), &handle);
     // err = LJM_Open(LJM_dtT7, LJM_ctUSB, 0, &handle);
-    err = LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_DEMO_MODE, &handle); // TODO
+    // err = LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_DEMO_MODE, &handle); // TODO
     ErrorCheck(err, "LJM_Open");
 }
 
@@ -36,8 +36,8 @@ void mach::LabJack::startStreaming() {
     // TODO Digital states...
     double scanRate = SCAN_RATE;
     std::unique_ptr<int[]> scanList = getScanList(sensors);
-    // err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
-    // ErrorCheck(err, "LJM_eStreamStart"); // TODO
+    err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
+    ErrorCheck(err, "LJM_eStreamStart"); // TODO
     spdlog::info("MACH: Successfully started stream for labjack '{}' with {} sensors at {}Hz.", getName(), sensors.size(), scanRate);
 }
 
@@ -51,8 +51,8 @@ void mach::LabJack::readStream() {
     int ljmBacklog = 0;
     int err = INITIAL_ERR_ADDRESS;
     std::unique_ptr<double[]> data(new double[sensors.size() + 1]);
-    // err = LJM_eStreamRead(handle, data.get(), &deviceBacklog, &ljmBacklog);
-    // ErrorCheck(err, "LJM_eStreamRead"); // TODO
+    err = LJM_eStreamRead(handle, data.get(), &deviceBacklog, &ljmBacklog);
+    ErrorCheck(err, "LJM_eStreamRead"); // TODO
 
     // Note: Set CJC value before other sensors, since they may depend on it.
     setCJCValue(data[sensors.size()]);
@@ -87,7 +87,13 @@ void mach::LabJack::readStream() {
         state[name] = nb;
     }
 
-    mach::addSensorData(state);
+    for (auto const& [key, value] : state) {
+        spdlog::info("{}: {}", key, value);
+        // std::cout << "{ " << key << ": " << value << " }";
+    }
+    // std::cout << std::endl;
+
+    // mach::addSensorData(state); // TODO
 }
 
 static std::unique_ptr<int[]> getScanList(std::vector<std::shared_ptr<mach::Sensor>> sensors) {

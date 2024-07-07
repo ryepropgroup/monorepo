@@ -1,9 +1,9 @@
 steps:
-  - action: OPEN
-    valve: IGNITER
+  # - action: OPEN
+  #   valve: IGNITER
 
   - action: SLEEP
     duration: 5
 
-  - action: CLOSE
-    valve: IGNITER
+  # - action: CLOSE
+  #   valve: IGNITER

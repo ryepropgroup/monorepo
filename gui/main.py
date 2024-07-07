@@ -21,7 +21,7 @@ button_positions = {
     "v20": (946, 95),
     "v21": (487, 266),
     "v22": (784, 17),
-    "v23": (600, 92),
+    "v23_no": (600, 92),
     "v30": (945, 405),
     "v31": (488, 558),
     "v32": (486, 396),
@@ -195,16 +195,10 @@ class GUIApp:
             self.sensor_labels[sensor] = label
 
     def control_valve(self, valve, state):
-        if "_no" in valve:
-            if state == True:
-                state = "close"
-            else:
-                state = "open"
+        if state == True:
+            state = "open"
         else:
-            if state == True:
-                state = "open"
-            else:
-                state = "close"
+            state = "close"
         message = f"valve:{valve}:{state}\n"
         self.send_message(message)
 
@@ -234,11 +228,18 @@ class GUIApp:
                 break
 
     def update_gui(self, data):
-        data = json.loads(data)
+        print(data)
+        try:
+            data = json.loads(data)
+        except Exception as e:
+            print(e)
+            return
+            
+        print(data)
         values = data.get("values", {})
-
+        # print(values)
         for valve, state in values.items():
-            if valve.startswith("v"):
+            if valve.startswith("V"):
                 open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
                 if open_btn and close_btn:
                     if "_no" in valve:
@@ -251,13 +252,13 @@ class GUIApp:
                         close_btn.config(state="disabled")
 
         for sensor, value in values.items():
-            if sensor.startswith("p") or sensor.startswith("t"):
+            if sensor.startswith("P") or sensor.startswith("T"):
                 bar = self.sensor_bars.get(sensor)
                 label = self.sensor_labels.get(sensor)
                 if bar and label:
                     bar["value"] = value
                     label.config(text=f"{value:.2f}")
-
+        print('potato')
         # self.root.after(1000, self.update_gui_periodically)
 
     def update_gui_periodically(self):

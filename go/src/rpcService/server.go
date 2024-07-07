@@ -2,6 +2,7 @@ package rpcService
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -39,7 +40,7 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 			log.Printf("Error: %v", err)
 			return err
 		}
-
+		fmt.Println(data)
 		// Forward sensor data to TCP clients
 		s.statusChan <- data
 	}

@@ -84,6 +84,7 @@ func (s *TCPServer) startListening(addr string) {
 func (s *TCPServer) broadcastStatusUpdates() {
 	for update := range s.statusChan {
 		jsonData, err := protojson.Marshal(update)
+		fmt.Println(jsonData)
 		if err != nil {
 			log.Printf("Failed to marshal status update: %v", err)
 			continue
