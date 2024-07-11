@@ -7,8 +7,6 @@
 
 namespace mach {
 
-static ThreadSafeQueue<std::pair<long, std::unordered_map<std::string, float>>> sensorQueue;  
-
 class ServiceClient {
 
 public:
@@ -24,6 +22,6 @@ private:
 
 void grpcStartClient(int argc, char **argv);
 
-void addSensorData(std::unordered_map<std::string, float> data);
+void addSensorData(std::unordered_map<std::string, double> data);
 
 } // namespace mach;

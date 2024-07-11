@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 #include "mach/util.hpp"
 #include "mach/device/device_manager.hpp"
+#include <thread>
 
 namespace mach {
 
@@ -26,13 +27,16 @@ bool CheckAction::init(YAML::Node node) {
     return true;
 }
 
-void CheckAction::execute() {
+void CheckAction::execute(bool override) {
     spdlog::info("MACH: Waiting on sensor '{}' for value {}.", sensor->getName(), threshold);
     
-    // while (sensor->getValue() < threshold) {
-    //     // spdlog::info("MACH: Sensor '{}' value is '{}'.", sensor->getName(), sensor->getValue());
-    //     util::sleepOrAbort(std::chrono::milliseconds(1));
-    // }
+    while (sensor->getValue() < threshold) {
+        if (override) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        } else {
+            DeviceManager::getInstance().sleepOrAbort(std::chrono::milliseconds(1));
+        }
+    }
 
     spdlog::info("MACH: Sensor '{}' value has reached treshold at '{}'.", sensor->getName(), sensor->getValue());
 }

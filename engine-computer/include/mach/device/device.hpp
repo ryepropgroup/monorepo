@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <atomic>
 
 namespace mach {
 
@@ -30,7 +31,7 @@ class Device {
         std::string name;
         std::string port;
         int labJackPin;
-        T value;
+        std::atomic<T> value;
 };
 
 } // namespace mach

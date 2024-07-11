@@ -3,7 +3,6 @@
 #include <spdlog/spdlog.h>
 #include "mach/sequences/sleep_action.hpp"
 #include "mach/device/device_manager.hpp"
-#include "mach/util.hpp"
 
 namespace mach {
 
@@ -20,9 +19,13 @@ bool SleepAction::init(YAML::Node node) {
     return true;
 }
 
-void SleepAction::execute() {
+void SleepAction::execute(bool override) {
     spdlog::info("MACH: Sleeping for {} seconds.", duration);
-    util::sleepOrAbort(std::chrono::milliseconds(static_cast<long>(duration * 1000.0)));
+    if (override) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long>(duration * 1000.0)));
+    } else {
+        DeviceManager::getInstance().sleepOrAbort(std::chrono::milliseconds(static_cast<long>(duration * 1000.0)));
+    }
 }
 
 } // namespace mach

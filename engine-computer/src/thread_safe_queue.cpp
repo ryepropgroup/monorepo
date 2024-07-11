@@ -1,6 +1,9 @@
 #include "mach/thread_safe_queue.hpp"
 #include <unordered_map>
   
+// Explicit instantiation of the template class, used in grpc_client.hpp.
+template class ThreadSafeQueue<std::pair<long, std::unordered_map<std::string, double>>>;
+
 template <typename T> 
 void ThreadSafeQueue<T>::push(T item) { 
     // Acquire lock 
@@ -30,4 +33,8 @@ T ThreadSafeQueue<T>::pop() {
     return item; 
 } 
 
-template class ThreadSafeQueue<std::pair<long, std::unordered_map<std::string, float>>>;
+template <typename T>
+size_t ThreadSafeQueue<T>::size() {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    return m_queue.size();
+}

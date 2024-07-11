@@ -24,4 +24,7 @@ public:
 
     // Pops an element off the queue 
     T pop();
+
+    // Returns the size of the queue
+    size_t size();
 }; 

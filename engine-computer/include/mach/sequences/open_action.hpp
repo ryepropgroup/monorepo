@@ -11,7 +11,7 @@ class OpenAction : public Action {
 
         bool init(YAML::Node node);
         void setValve(std::shared_ptr<Valve> valve);
-        void execute() override;
+        void execute(bool override) override;
 
     private:
         std::shared_ptr<Valve> valve;

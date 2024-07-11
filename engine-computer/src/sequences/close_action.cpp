@@ -20,13 +20,8 @@ bool CloseAction::init(YAML::Node node) {
     return true;
 }
 
-void CloseAction::execute() {
-    spdlog::info("MACH: Closing valve '{}'.", valve->getName());
-    if (valve->getName().ends_with("NO")) {
-        valve->close();
-    } else {
-        valve->open();
-    }
+void CloseAction::execute(bool override) {
+    valve->close();
 }
 
 void CloseAction::setValve(std::shared_ptr<Valve> valve) {
