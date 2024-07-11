@@ -34,7 +34,7 @@ static void parseSequence(std::string file) {
 
     std::string sequenceName = file.substr(file.find_last_of("/\\") + 1);
     sequenceName = sequenceName.substr(0, sequenceName.find_last_of("."));
-    std::unique_ptr<Sequence> sequence = std::make_unique<Sequence>(sequenceName);
+    std::shared_ptr<Sequence> sequence = std::make_shared<Sequence>(sequenceName);
     spdlog::info("MACH: Parsing sequence from file '{}.yml'", sequenceName);
 
     ActionFactory& actionFactory = ActionFactory::getInstance();
@@ -52,7 +52,7 @@ static void parseSequence(std::string file) {
     }
 
     SequenceManager& sequenceManager = SequenceManager::getInstance();
-    sequenceManager.addSequence(sequenceName, std::move(sequence));
+    sequenceManager.addSequence(sequenceName, sequence);
 
     spdlog::info("MACH: Registered sequence: {}", sequenceName);
 }

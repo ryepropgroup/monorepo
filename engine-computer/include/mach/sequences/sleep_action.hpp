@@ -10,7 +10,7 @@ class SleepAction : public Action {
         SleepAction() : Action() {}
 
         bool init(YAML::Node node);
-        void execute() override;
+        void execute(bool override) override;
 
     private:
         double duration;

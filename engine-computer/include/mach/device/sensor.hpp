@@ -23,7 +23,7 @@ class Sensor : public Device<double> {
         
         void print() override;
     private:
-        char thermocoupleType = 0;
+        char thermocoupleType = '\0';
         double range = 0;
         double multiplier = 1.0;
         std::string negativeChannel = "";

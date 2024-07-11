@@ -6,6 +6,7 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(Protobuf CONFIG REQUIRED)
 find_package(gRPC CONFIG REQUIRED)
+find_package(wxWidgets CONFIG REQUIRED COMPONENTS core)
 
 if (APPLE)
     message("CMake: SETTING Apple Library Paths")
@@ -41,10 +42,14 @@ else()
 endif()
 add_executable(engine_computer ${SOURCES})
 
+# Copy resources folder
+file (COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
+
 # link libs
 if(MINGW) 
     target_link_libraries(engine_computer PRIVATE ws2_32) 
 endif()
 target_link_libraries(engine_computer PRIVATE ${LJM} spdlog::spdlog yaml-cpp::yaml-cpp
     absl::check absl::flags absl::flags_parse absl::log 
-    gRPC::grpc++_reflection gRPC::grpc++ protobuf::libprotobuf)
+    gRPC::grpc++_reflection gRPC::grpc++ protobuf::libprotobuf
+    wx::core)

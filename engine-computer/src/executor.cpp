@@ -1,21 +1,25 @@
 #include "mach/executor.hpp"
 #include <thread>
+#include <memory>
 #include <spdlog/spdlog.h>
 #include "mach/sequences/sequence_manager.hpp"
 
-static void executeSequenceThread(const std::string sequenceName, std::atomic_bool& executing);
-
 void mach::Executor::executeSequence(const std::string sequenceName) {
-    if (executing.exchange(true, std::memory_order_acq_rel)) {
+    std::shared_ptr<Sequence> sequence = SequenceManager::getInstance().getSequence(sequenceName);
+    if (sequence == nullptr) {
+        spdlog::warn("Sequence '{}' not found, skipping execution!", sequenceName);
+        return;
+    }
+
+    if (!sequence->isOverride() && executing.exchange(true, std::memory_order_acq_rel)) {
         spdlog::warn("MACH: Skipped executing sequence {}, another sequence is already being executed.", sequenceName);
         return;
     }
-    std::thread(executeSequenceThread, sequenceName, std::ref(executing)).detach();
-}
 
-static void executeSequenceThread(const std::string sequenceName, std::atomic_bool& executing) {
-    spdlog::info("MACH: Executing sequence {}.", sequenceName);
-    mach::SequenceManager::getInstance().executeSequence(sequenceName);
-    spdlog::info("MACH: Finished sequence {}.", sequenceName);
-    executing.store(false, std::memory_order_release);
+    std::thread([this, sequence]() {
+        spdlog::info("MACH: Executing sequence {}.", sequence->getName());
+        sequence->execute();
+        spdlog::info("MACH: Finished sequence {}.", sequence->getName());
+        this->executing.store(false, std::memory_order_release);
+    }).detach();
 }

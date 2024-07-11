@@ -8,11 +8,21 @@ bool mach::Valve::isOpen() {
 }
 
 void mach::Valve::open() {
-    labjack->setHigh(port);
+    spdlog::info("MACH: Opening valve '{}'.", this->getName());
+    if (this->getName().ends_with("NO")) {
+        labjack->setHigh(port);
+    } else {
+        labjack->setLow(port);
+    }
 }
 
 void mach::Valve::close() {
-    labjack->setLow(port);
+    spdlog::info("MACH: Closing valve '{}'.", this->getName());
+    if (this->getName().ends_with("NO")) {
+        labjack->setLow(port);
+    } else {
+        labjack->setHigh(port);
+    }
 }
 
 void mach::Valve::print() {

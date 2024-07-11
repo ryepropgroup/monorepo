@@ -2,6 +2,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <atomic>
 #include "mach/sequences/sequence.hpp"
 
 namespace mach {
@@ -25,21 +26,8 @@ class SequenceManager {
          * @param sequenceName The name of the sequence.
          * @param sequence A unique pointer to the sequence.
          */
-        void addSequence(const std::string& sequenceName, std::unique_ptr<Sequence> sequence) {
-            sequences[sequenceName] = std::move(sequence);
-        }
-
-        /**
-         * @brief Executes a sequence.
-         * 
-         * @param sequenceName The name of the sequence to execute.
-         */
-        void executeSequence(const std::string& sequenceName) {
-            if (sequences.find(sequenceName) == sequences.end()) {
-                spdlog::warn("Sequence '{}' not found, ignoring!", sequenceName);
-                return;
-            }
-            sequences[sequenceName]->execute();
+        void addSequence(const std::string& sequenceName, std::shared_ptr<Sequence> sequence) {
+            sequences[sequenceName] = sequence;
         }
 
         std::vector<std::string> getSequenceNames() {
@@ -49,10 +37,15 @@ class SequenceManager {
             }
             return sequenceNames;
         }
+
+        std::shared_ptr<Sequence> getSequence(const std::string& sequenceName) {
+            return sequences[sequenceName];
+        }
     
     private:
         SequenceManager() {}
 
-        std::unordered_map<std::string, std::unique_ptr<Sequence>> sequences;
+        std::unordered_map<std::string, std::shared_ptr<Sequence>> sequences;
+        std::atomic<bool> playingAbortSequence = false;
     };
 }

@@ -2,6 +2,7 @@
   "dependencies": [
     "yaml-cpp",
     "spdlog",
-    "grpc"
+    "grpc",
+    "wxwidgets"
   ]
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <atomic>
 #include <string>
-#include <condition_variable>
 
 namespace mach {
 
@@ -30,7 +29,5 @@ class Executor {
         Executor() {}
 
         std::atomic_bool executing = false;
-        std::atomic_bool abort = false;
-        std::condition_variable abortCV;
     };
 }

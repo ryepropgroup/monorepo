@@ -1,3 +1,4 @@
+#include "mach/main.hpp"
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
@@ -12,6 +13,7 @@
 #include "mach/sequences/sequence_parser.hpp"
 #include "mach/sequences/check_action.hpp"
 #include "mach/grpc_client.hpp"
+#include "mach/gui.hpp"
 
 #define LABJACK_CONFIG std::string("config/labjacks/")
 #define REMOTE_CONFIG std::string("config/remote.yml")
@@ -25,7 +27,7 @@ int main(int argc, char* argv[]) {
     mach::parseRemoteConfig(REMOTE_CONFIG);
 
     // Print all devices for debug.
-    // mach::DeviceManager& deviceManager = mach::DeviceManager::getInstance();
+    mach::DeviceManager& deviceManager = mach::DeviceManager::getInstance();
     // deviceManager.printDevices();
 
     // Register sequence actions.
@@ -39,11 +41,19 @@ int main(int argc, char* argv[]) {
     mach::parseAllSequences(SEQUENCES_CONFIG);
 
     // Start streaming all LabJacks.
-    // mach::DeviceManager::getInstance().startAllLabjackStreams();
+    deviceManager.connectAllLabjacks();
+    deviceManager.startAllLabjackStreams();
 
     // Start gRPC client.
-    mach::grpcStartClient(argc, argv);
+    // mach::grpcStartClient(argc, argv);
+
+    // Start GUI.
+    mach::gui::startGUI(argc, argv);
 
     spdlog::info("MACH: Reached end of main."); //🧏‍♂️🤫
     while (true) {}
+}
+
+bool mach::isDemo() {
+    return std::getenv("MACH_DEMO") != nullptr;
 }

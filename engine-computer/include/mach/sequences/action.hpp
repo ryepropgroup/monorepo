@@ -21,7 +21,9 @@ namespace mach {
 
             /**
              * @brief Executes this action.
+             * 
+             * @param override Whether or not to ignore the abort state for this action.
              */
-            virtual void execute() = 0;
+            virtual void execute(bool override) = 0;
     };
 }

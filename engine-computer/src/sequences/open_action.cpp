@@ -20,13 +20,8 @@ bool OpenAction::init(YAML::Node node) {
     return true;
 }
 
-void OpenAction::execute() {
-    spdlog::info("MACH: Opening valve '{}'.", valve->getName());
-    if (valve->getName().ends_with("NO")) {
-        valve->open();
-    } else {
-        valve->close();
-    }
+void OpenAction::execute(bool override) {
+    valve->open();
 }
 
 void OpenAction::setValve(std::shared_ptr<Valve> valve) {

@@ -10,7 +10,7 @@ class CheckAction : public Action {
         CheckAction() : Action() {}
 
         bool init(YAML::Node node);
-        void execute() override;
+        void execute(bool override) override;
 
     private:
         std::shared_ptr<Sensor> sensor;

@@ -1,9 +1,13 @@
 #!/bin/bash
 
 WINDOWS_DIR="./engine-computer/build/Release/engine_computer.exe"
+UNIX_DIR="./engine-computer/build/engine_computer"
 
-if [ ! -f $WINDOWS_DIR ]; then
-    echo "MACH: Executable not found! Please run ./build.sh in the root folder first."
-else
+if [ -f $WINDOWS_DIR ]; then
     $WINDOWS_DIR
+elif [ -f $UNIX_DIR ]; then
+    $UNIX_DIR
+else
+    echo "MACH: Executable not found! Please run ./build.sh in the root folder first."
+    exit 1
 fi

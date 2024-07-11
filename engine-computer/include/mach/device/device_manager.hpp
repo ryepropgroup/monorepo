@@ -4,6 +4,8 @@
 #include <memory>
 #include <unordered_map>
 #include <list>
+#include <chrono>
+#include <condition_variable>
 #include "mach/labjack.hpp"
 #include "mach/device/valve.hpp"
 #include "mach/device/sensor.hpp"
@@ -28,8 +30,17 @@ class DeviceManager {
         void addDevice(std::shared_ptr<Sensor> sensor);
         std::shared_ptr<Valve> getValve(std::string valveName);
         std::shared_ptr<Sensor> getSensor(std::string sensorName);
+        /**
+         * @brief Disables abort mode, connects all LabJacks and starts all streams.
+         */
+        void reconnectAllLabjacks();
+        void connectAllLabjacks();
+        void abortAllLabjacks();
+        void disconnectAllLabjacks();
         void startAllLabjackStreams();
         void printDevices();
+        bool isAborting();
+        bool sleepOrAbort(std::chrono::milliseconds duration);
     
     private:
         DeviceManager() {}
@@ -37,6 +48,10 @@ class DeviceManager {
         std::list<std::shared_ptr<LabJack>> labJacks;
         std::unordered_map<std::string, std::shared_ptr<Valve>> valves;
         std::unordered_map<std::string, std::shared_ptr<Sensor>> sensors;
+
+        std::condition_variable abortCondition;
+        std::atomic<bool> abortFlag = false;
+        std::mutex abortMutex;
 };
 
 } // namespace mach

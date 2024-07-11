@@ -7,23 +7,16 @@
 #include "LabJackM.h"
 #include "../../vendor/labjack/LJM_Utilities.h"
 #include "../../vendor/labjack/LabJackM.h"
+#include "mach/main.hpp"
 
 mach::Sensor::Sensor(DeviceType type, std::string name, std::string port) : 
         Device(type, name, port) {
-    this->value = 0.0;
+    this->updateValue(0.0);
 }
 
 void mach::Sensor::setLabjack(std::shared_ptr<LabJack> labjack) {
     this->labjack = labjack;
-    if (labJackSettings.first.size() == 0) {
-        return;
-    }
-    int errorAddress;
-    int err = INITIAL_ERR_ADDRESS;
-    std::unique_ptr<const char *[]> settingNames = util::vectorToChar(labJackSettings.first);
-    err = LJM_eWriteNames(labjack->getHandle(), int(labJackSettings.first.size()),
-        settingNames.get(), util::vectorToDouble(labJackSettings.second), &errorAddress);
-    ErrorCheck(err, "LJM_eWriteNames");
+    labjack->labjackWriteNames(labJackSettings);
 }
 
 void mach::Sensor::setThermocoupleType(char type) {
@@ -47,25 +40,30 @@ void mach::Sensor::setNegativeChannel(std::string channel) {
 }
 
 void mach::Sensor::updateValue(double value) {
-    if (thermocoupleType != 0) {
+    double newValue = value;
+    if (thermocoupleType != '\0') {
         if (labjack == nullptr) {
             spdlog::error("Sensor '{}' is a thermocouple, but LabJack is not set!", name);
             return;
         }
-        double cjcValue = labjack->getCJCValue();
         int err = INITIAL_ERR_ADDRESS;
-        double newValue;
-        err = LJM_TCVoltsToTemp(LJM_ttK, value, cjcValue, &newValue);
-        // ErrorCheck(err, "LJM_TCVoltsToTemp"); // TODO
-        this->value = newValue - 273.15;
-        return;
+        if (isDemo()) {
+            newValue = 69.0 + 273.15;
+        } else {
+            err = LJM_TCVoltsToTemp(LJM_ttK, value, labjack->getCJCValue(), &newValue);
+            if (err != LJME_NOERROR) {
+                char errorString[LJM_MAX_NAME_SIZE];
+                LJM_ErrorToString(err, errorString);
+                spdlog::warn("Error converting thermocouple voltage to temperature: {}", errorString);
+                return;
+            }
+        }
+        newValue -= 273.15;
     } else if (multiplier != 1.0) {
-        this->value = value * multiplier;
-        return;
+        newValue = value * multiplier;
     }
-    mach::Device<double>::updateValue(value);
-
-    // spdlog::info("Sensor '{}' updated to value: {}", name, this->value); TODO
+    mach::Device<double>::updateValue(newValue);
+    // spdlog::info("Sensor '{}' updated to value: {}", name, this->getValue()); // TODO
 }
 
 void mach::Sensor::print() {

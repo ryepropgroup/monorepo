@@ -1,6 +1,7 @@
 #include "mach/device/device_manager.hpp"
 #include <spdlog/spdlog.h>
 #include <thread>
+#include "mach/executor.hpp"
 
 static void readLabjackStreams(std::list<std::shared_ptr<mach::LabJack>>& labJacks);
 
@@ -32,16 +33,53 @@ void mach::DeviceManager::startAllLabjackStreams() {
     std::thread(readLabjackStreams, std::ref(labJacks)).detach();
 }
 
+void mach::DeviceManager::abortAllLabjacks() {
+    spdlog::info("MACH: Aborting all sequences.");
+    abortFlag = true;
+    abortCondition.notify_all();
+    mach::Executor::getInstance().executeSequence("abort");
+}
+
+void mach::DeviceManager::disconnectAllLabjacks() {
+    if (abortFlag) {
+        spdlog::info("MACH: Already disconnected, skipping.");
+        return;
+    }
+    spdlog::info("MACH: Aborting all sequences.");
+    abortFlag = true;
+    abortCondition.notify_all();
+
+    spdlog::info("MACH: Disconnecting all labjacks.");
+    for (auto& labJack : labJacks) {
+        labJack->disconnect();
+    }
+}
+
+void mach::DeviceManager::connectAllLabjacks() {
+    spdlog::info("MACH: Connecting all labjacks.");
+    for (auto& labJack : labJacks) {
+        labJack->connect();
+    }
+}
+
+void mach::DeviceManager::reconnectAllLabjacks() {
+    this->disconnectAllLabjacks();
+    spdlog::info("MACH: Reconnecting all labjacks.");
+    abortFlag = false;
+    spdlog::info("MACH: Disabled abort mode.");
+    this->connectAllLabjacks();
+    this->startAllLabjackStreams();
+}
+
 static void readLabjackStreams(std::list<std::shared_ptr<mach::LabJack>>& labJacks) {
     spdlog::info("MACH: Started reading LabJack streams.");
     while (true) { // TODO Abort?
         for (auto& labJack : labJacks) {
-            labJack->readStream();
+            if (!labJack->readStream()) {
+                spdlog::info("MACH: Stopped reading all LabJack streams.");
+                return;
+            }
         }
-        // 1 in 10,000,000 chance of printing devices.
-        // if (rand() % 10000000 == 0) {
-        //     mach::DeviceManager::getInstance().printDevices();
-        // }
     }
 }
 
@@ -61,4 +99,14 @@ void mach::DeviceManager::printDevices() {
     for (auto& device : sensors) {
         device.second.get()->print();
     }
+}
+
+bool mach::DeviceManager::isAborting() {
+    return abortFlag;
+}
+
+bool mach::DeviceManager::sleepOrAbort(std::chrono::milliseconds duration) {
+    std::unique_lock<std::mutex> lock(abortMutex);
+    abortCondition.wait_for(lock, duration, [this]() { return this->abortFlag.load(); });
+    return abortFlag.load();
 }
