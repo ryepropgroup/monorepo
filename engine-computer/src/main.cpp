@@ -41,11 +41,11 @@ int main(int argc, char* argv[]) {
     mach::parseAllSequences(SEQUENCES_CONFIG);
 
     // Start streaming all LabJacks.
-    deviceManager.connectAllLabjacks();
+    // deviceManager.connectAllLabjacks();
     deviceManager.startAllLabjackStreams();
 
     // Start gRPC client.
-    // mach::grpcStartClient(argc, argv);
+    mach::grpcStartClient(argc, argv);
 
     // Start GUI.
     mach::gui::startGUI(argc, argv);

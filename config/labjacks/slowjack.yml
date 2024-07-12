@@ -7,7 +7,7 @@ valves:
   V31: DIO3
   V20: DIO4
   V32: DIO5
-  V21: DIO6
+  # V21: DIO6
   V33: DIO7
   V35_NO: DIO8
   V36: DIO9
@@ -19,11 +19,11 @@ valves:
   V22: DIO15
 
 sensors:
-  - name: T1
+  - name: T2
     port: AIN7
     thermocouple_type: K
 
-  - name: T2
+  - name: T3
     port: AIN9
     thermocouple_type: K
 

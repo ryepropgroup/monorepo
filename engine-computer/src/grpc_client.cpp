@@ -56,7 +56,7 @@ void ServiceClient::StartCommandStream() {
 
     // The actual RPC.
     std::unique_ptr<grpc::ClientReader<proto::SequenceCommand>> reader(stub_->CommandStream(&context, info));
-    spdlog::info("MACH: Sent device information to server. Listening for commands.");
+    spdlog::info("MACH: Started command stream. Sent device information to server.");
 
     proto::SequenceCommand sequence;
     while (reader->Read(&sequence)) {
@@ -89,7 +89,7 @@ void ServiceClient::StartCommandStream() {
             spdlog::warn("MACH: Unknown command type '{}', ignoring!", type);
         }
     }
-    spdlog::info("MACH: GRPC client finished.");
+    spdlog::info("MACH: GRPC command stream client finished.");
 }
 
 static void startCommandStream(std::string target) {
