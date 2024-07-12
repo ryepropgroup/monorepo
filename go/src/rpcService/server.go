@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"sync"
 	"time"
 
 	service "github.com/ryepropgroup/protoServer/protos"
@@ -25,6 +26,22 @@ type server struct {
 	deviceInfo      *messages.DeviceInformation
 	currentFileName string
 	sensorOrder     []string
+	unsentData      []*messages.SensorData
+	mu              sync.Mutex
+	isFileReady     bool
+}
+
+func (s *server) writeData(file *os.File, data *messages.SensorData) error {
+	writer := csv.NewWriter(file)
+	row := []string{fmt.Sprintf("%d", data.Timestamp)}
+	for _, name := range s.sensorOrder {
+		row = append(row, fmt.Sprintf("%f", data.Values[name]))
+	}
+	if err := writer.Write(row); err != nil {
+		return err
+	}
+	writer.Flush()
+	return nil
 }
 
 func getMostRecentSensorData(prefix string) (string, error) {
@@ -59,6 +76,8 @@ func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *mess
 	return &server{
 		commandChan: commandChan,
 		statusChan:  statusChan,
+		unsentData:  make([]*messages.SensorData, 0),
+		isFileReady: false,
 	}
 }
 
@@ -86,28 +105,13 @@ func (s *server) createCSVFile() error {
 	defer file.Close()
 	writer := csv.NewWriter(file)
 	s.currentFileName = fName
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.isFileReady = true
 	return writer.Write(headers)
 }
 
 func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStreamServer) error {
-	if s.currentFileName == "" {
-		fName, err := getMostRecentSensorData("sensor_data_")
-		if err != nil {
-			return err
-		}
-		if fName == "" {
-			return fmt.Errorf("no sensor data location")
-		}
-		s.currentFileName = fName
-	}
-	file, err := os.OpenFile(s.currentFileName, os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	writer := csv.NewWriter(file)
-
 	for {
 		data, err := stream.Recv()
 		if err == io.EOF {
@@ -126,15 +130,37 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 		}
 		fmt.Println(data)
 		// write Data
-		row := []string{fmt.Sprintf("%d", data.Timestamp)}
-		for _, name := range s.sensorOrder {
-			row = append(row, fmt.Sprintf("%f", data.Values[name]))
+		s.mu.Lock()
+		if !s.isFileReady {
+			s.unsentData = append(s.unsentData, data)
+			s.mu.Unlock()
+			continue
+		}
+		s.mu.Unlock()
+
+		if s.currentFileName == "" {
+			fName, err := getMostRecentSensorData("sensor_data_")
+			if err != nil {
+				return err
+			}
+			if fName == "" {
+				return fmt.Errorf("no sensor data files found")
+			}
+			s.currentFileName = fName
 		}
 
-		if err := writer.Write(row); err != nil {
+		file, err := os.OpenFile(s.currentFileName, os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
 			return err
 		}
-		writer.Flush()
+
+		if err := s.writeData(file, data); err != nil {
+			file.Close()
+			return err
+		}
+
+		file.Close()
+
 		// Forward sensor data to TCP clients
 		s.statusChan <- data
 	}
@@ -144,6 +170,23 @@ func (s *server) CommandStream(info *messages.DeviceInformation, stream service.
 	s.deviceInfo = info
 	s.updateSensorOrder()
 	s.createCSVFile()
+
+	s.mu.Lock()
+	buff := s.unsentData
+	s.unsentData = make([]*messages.SensorData, 0)
+	s.mu.Unlock()
+
+	file, err := os.OpenFile(s.currentFileName, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	for _, data := range buff {
+		if err := s.writeData(file, data); err != nil {
+			return err
+		}
+	}
 
 	for cmd := range s.commandChan {
 		if err := stream.Send(cmd); err != nil {
