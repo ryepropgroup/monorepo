@@ -84,7 +84,7 @@ func (s *TCPServer) startListening(addr string) {
 func (s *TCPServer) broadcastStatusUpdates() {
 	for update := range s.statusChan {
 		jsonData, err := protojson.Marshal(update)
-		fmt.Println(jsonData)
+		// fmt.Println(jsonData)
 		if err != nil {
 			log.Printf("Failed to marshal status update: %v", err)
 			continue
@@ -92,9 +92,14 @@ func (s *TCPServer) broadcastStatusUpdates() {
 
 		s.mu.Lock()
 		for conn := range s.clients {
-			_, err := conn.Write(append(jsonData, '\n'))
+			writer := bufio.NewWriter(conn)
+			_, err := writer.Write(append(jsonData, '\n'))
 			if err != nil {
 				log.Printf("Failed to send status update: %v", err)
+			}
+			err = writer.Flush()
+			if err != nil {
+				log.Printf("Failed to flush buffer: %v", err)
 			}
 		}
 		s.mu.Unlock()

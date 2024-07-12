@@ -23,7 +23,8 @@ class Device {
         virtual void print() = 0;
         std::string getName();
         void updateValue(T value);
-        int getLabJackPin() { return labJackPin; }
+        int getLabJackPin();
+        std::string getPort();
 
     protected:
         DeviceType type;

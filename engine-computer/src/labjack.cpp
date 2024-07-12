@@ -16,7 +16,7 @@
 #include "mach/device/device_manager.hpp"
 
 #define SCANS_PER_READ 1
-#define SCAN_RATE 10.0
+#define SCAN_RATE 5.0
 
 static std::unique_ptr<int[]> getScanList(std::vector<std::shared_ptr<mach::Sensor>> sensors);
 
@@ -38,7 +38,7 @@ void mach::LabJack::connect() {
 
 void mach::LabJack::reconnect() {
     disconnect();
-    connect();
+    connect(); // TODO What about write names?
 }
 
 void mach::LabJack::disconnect() {
@@ -53,21 +53,21 @@ mach::LabJack::~LabJack() {
 }
 
 void mach::LabJack::startStreaming() {
-    std::lock_guard<std::mutex> lock(labjackMutex);
-    if (handle == -1) {
-        spdlog::error("MACH: LabJack '{}' is not connected, cannot start stream!", getName());
-        return;
-    }
-    int err = INITIAL_ERR_ADDRESS;
-    err = LJM_eWriteName(handle, "STREAM_TRIGGER_INDEX", 0);
-    ErrorCheck(err, "LJM_eWriteName");
-    double scanRate = SCAN_RATE;
-    std::unique_ptr<int[]> scanList = getScanList(sensors);
-    if (!isDemo()) {
-        err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
-        ErrorCheck(err, "LJM_eStreamStart");
-    }
-    spdlog::info("MACH: Successfully started stream for labjack '{}' with {} sensors at {}Hz.", getName(), sensors.size(), scanRate);
+    // std::lock_guard<std::mutex> lock(labjackMutex);
+    // if (handle == -1) {
+    //     spdlog::error("MACH: LabJack '{}' is not connected, cannot start stream!", getName());
+    //     return;
+    // }
+    // int err = INITIAL_ERR_ADDRESS;
+    // err = LJM_eWriteName(handle, "STREAM_TRIGGER_INDEX", 0);
+    // ErrorCheck(err, "LJM_eWriteName");
+    // double scanRate = SCAN_RATE;
+    // std::unique_ptr<int[]> scanList = getScanList(sensors);
+    // if (!isDemo()) {
+    //     err = LJM_eStreamStart(handle, SCANS_PER_READ, sensors.size(), scanList.get(), &scanRate);
+    //     ErrorCheck(err, "LJM_eStreamStart");
+    // }
+    // spdlog::info("MACH: Successfully started stream for labjack '{}' with {} sensors at {}Hz.", getName(), sensors.size(), scanRate);
 }
 
 union udouble {
@@ -81,27 +81,34 @@ bool mach::LabJack::readStream() {
         spdlog::warn("MACH: LabJack '{}' is no longer connected, stopped reading stream!", getName());
         return false;
     }
-    // spdlog::info("MACH: Reading stream for labjack '{}'.", getName()); // TODO
-    int deviceBacklog = 0;
-    int ljmBacklog = 0;
-    int err = INITIAL_ERR_ADDRESS;
-    std::unique_ptr<double[]> data(new double[sensors.size() + 1]);
-    if (isDemo()) {
-        std::fill(data.get(), data.get() + sensors.size() + 1, 69.0);
-    } else {
-        err = LJM_eStreamRead(handle, data.get(), &deviceBacklog, &ljmBacklog);
-        ErrorCheck(err, "LJM_eStreamRead");
-    }
+    // int deviceBacklog = 0;
+    // int ljmBacklog = 0;
+    // int err = INITIAL_ERR_ADDRESS;
+    // std::unique_ptr<double[]> data(new double[sensors.size() + 1]);
+    // if (isDemo()) {
+    //     std::fill(data.get(), data.get() + sensors.size() + 1, 69.0);
+    // } else {
+    //     err = LJM_eStreamRead(handle, data.get(), &deviceBacklog, &ljmBacklog);
+    //     ErrorCheck(err, "LJM_eStreamRead");
+    // }
 
     // Note: Set CJC value before other sensors, since they may depend on it.
-    setCJCValue(data[sensors.size()]);
+    // setCJCValue(data[sensors.size()]);
+
+    double cjcValue;
+    LJM_eReadName(handle, "AIN14", &cjcValue);
+    setCJCValue(cjcValue);
 
     std::unordered_map<std::string, double> state;
 
     for (int i = 0; i < sensors.size(); i++) {
         // Update state internally and in data packet.
-        sensors[i]->updateValue(data[i]);
-        state[sensors[i]->getName()] = data[i];
+        // sensors[i]->updateValue(data[i]);
+        // state[sensors[i]->getName()] = data[i];
+        double value;
+        LJM_eReadName(handle, sensors[i]->getPort().c_str(), &value);
+        sensors[i]->updateValue(value);
+        state[sensors[i]->getName()] = value;
     }
 
     udouble ljbits{};

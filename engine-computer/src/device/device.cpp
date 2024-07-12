@@ -35,5 +35,15 @@ void mach::Device<T>::updateValue(T value) {
     this->value = value;
 }
 
+template <typename T>
+int mach::Device<T>::getLabJackPin() { 
+    return labJackPin; 
+}
+
+template <typename T>
+std::string mach::Device<T>::getPort() { 
+    return port; 
+}
+
 template class mach::Device<double>;
 template class mach::Device<bool>;

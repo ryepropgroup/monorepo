@@ -34,9 +34,9 @@ button_positions = {
 }
 
 progress_bar_positions = {
-    "p1": (146, 261, "horizontal", 2500),
-    "p2": (818, 250, "horizontal", 2500),
-    "p3": (817, 399, "horizontal", 2500),
+    "p10": (146, 261, "horizontal", 2500),
+    "p20": (818, 250, "horizontal", 2500),
+    "p30": (817, 399, "horizontal", 2500),
     "p20": (1122, 161, "horizontal", 2500),
     "p30": (1142, 437, "horizontal", 2500),
     "p22": (954, 230, "horizontal", 2500),
@@ -228,21 +228,21 @@ class GUIApp:
                 break
 
     def update_gui(self, data):
-        print(data)
         try:
             data = json.loads(data)
         except Exception as e:
-            print(e)
+            # print(e)
+            # print(data)
             return
             
-        print(data)
         values = data.get("values", {})
-        # print(values)
         for valve, state in values.items():
-            if valve.startswith("V"):
+            valve = valve.lower()
+            state = state == 1
+            if valve.startswith("v"):
                 open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
                 if open_btn and close_btn:
-                    if "_no" in valve:
+                    if not "_no" in valve:
                         state = not state
                     if state:
                         open_btn.config(state="disabled")
@@ -252,13 +252,13 @@ class GUIApp:
                         close_btn.config(state="disabled")
 
         for sensor, value in values.items():
-            if sensor.startswith("P") or sensor.startswith("T"):
+            sensor = sensor.lower()
+            if sensor.startswith("p") or sensor.startswith("t"):
                 bar = self.sensor_bars.get(sensor)
                 label = self.sensor_labels.get(sensor)
                 if bar and label:
                     bar["value"] = value
                     label.config(text=f"{value:.2f}")
-        print('potato')
         # self.root.after(1000, self.update_gui_periodically)
 
     def update_gui_periodically(self):
