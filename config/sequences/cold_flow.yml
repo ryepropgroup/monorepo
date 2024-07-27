@@ -1,0 +1,24 @@
+steps:
+  - action: OPEN
+    valve: V20
+
+  - action: SLEEP
+    duration: 0.650
+
+  - action: OPEN
+    valve: V
+
+  - action: SLEEP
+    duration: 4
+
+  - action: CLOSE
+    valve: V30
+
+  - action: SLEEP
+    duration: 2.5
+
+  - action: CLOSE
+    valve: V20
+
+  - action: CLOSE
+    valve: V10

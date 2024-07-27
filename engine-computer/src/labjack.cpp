@@ -108,7 +108,8 @@ bool mach::LabJack::readStream() {
         double value;
         LJM_eReadName(handle, sensors[i]->getPort().c_str(), &value);
         sensors[i]->updateValue(value);
-        state[sensors[i]->getName()] = value;
+        state[sensors[i]->getName()] = sensors[i]->getValue();
+        
     }
 
     udouble ljbits{};
@@ -128,7 +129,7 @@ bool mach::LabJack::readStream() {
         int nb = v - '0';
         // Update state internally and in data packet.
         valve->updateValue(nb);
-        state[name] = nb;
+        state[name] = valve->getValue();
     }
 
     // for (auto const& [key, value] : state) {

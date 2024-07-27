@@ -35,28 +35,28 @@ MyFrame::MyFrame(const wxString& title)
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
     // Load logo image
-    wxString resourcesPath = wxStandardPaths::Get().GetResourcesDir();
-    spdlog::info("MACH: GUI Resources path: {}", resourcesPath.ToStdString());
+    // wxString resourcesPath = wxStandardPaths::Get().GetResourcesDir();
+    // spdlog::info("MACH: GUI Resources path: {}", resourcesPath.ToStdString());
 
-    wxImage logoImage;
-    if (!logoImage.LoadFile(resourcesPath + std::filesystem::path::preferred_separator + "resources" + 
-                            std::filesystem::path::preferred_separator + "mach_logo.png", wxBITMAP_TYPE_PNG)) {
-        wxMessageBox("Failed to load GUI logo image!", "Error", wxOK | wxICON_ERROR);
-        wxTheApp->OnExit();
-        return;
-    }
+    // wxImage logoImage;
+    // if (!logoImage.LoadFile(resourcesPath + std::filesystem::path::preferred_separator + "resources" + 
+    //                         std::filesystem::path::preferred_separator + "mach_logo.png", wxBITMAP_TYPE_PNG)) {
+    //     wxMessageBox("Failed to load GUI logo image!", "Error", wxOK | wxICON_ERROR);
+    //     wxTheApp->OnExit();
+    //     return;
+    // }
 
     // Header
     wxBoxSizer* headerSizer = new wxBoxSizer(wxHORIZONTAL);
 
     // Scale the logo image to be 50px high
-    int newHeight = 75;
-    int newWidth = (logoImage.GetWidth() * newHeight) / logoImage.GetHeight();
-    logoImage = logoImage.Scale(newWidth, newHeight, wxIMAGE_QUALITY_HIGH);
+    // int newHeight = 75;
+    // int newWidth = (logoImage.GetWidth() * newHeight) / logoImage.GetHeight();
+    // logoImage = logoImage.Scale(newWidth, newHeight, wxIMAGE_QUALITY_HIGH);
 
     // Add logo
-    wxStaticBitmap* logoBitmap = new wxStaticBitmap(this, wxID_ANY, wxBitmap(logoImage));
-    headerSizer->Add(logoBitmap, 0, wxALIGN_LEFT | wxALL, 5);
+    // wxStaticBitmap* logoBitmap = new wxStaticBitmap(this, wxID_ANY, wxBitmap(logoImage));
+    // headerSizer->Add(logoBitmap, 0, wxALIGN_LEFT | wxALL, 5);
 
     // Add title
     wxStaticText* titleText = new wxStaticText(this, wxID_ANY, "MACH Engine Computer");
@@ -66,9 +66,9 @@ MyFrame::MyFrame(const wxString& title)
     sizer->Add(headerSizer, 0, wxALIGN_CENTER);
 
     // Set the application icon
-    wxIcon appIcon;
-    appIcon.CopyFromBitmap(wxBitmap(logoImage)); // Use the original size image for the icon
-    SetIcon(appIcon);
+    // wxIcon appIcon;
+    // appIcon.CopyFromBitmap(wxBitmap(logoImage)); // Use the original size image for the icon
+    // SetIcon(appIcon);
 
     // Buttons
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);

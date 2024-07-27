@@ -30,6 +30,7 @@ class DeviceManager {
         void addDevice(std::shared_ptr<Sensor> sensor);
         std::shared_ptr<Valve> getValve(std::string valveName);
         std::shared_ptr<Sensor> getSensor(std::string sensorName);
+        std::vector<std::shared_ptr<Sensor>> getSensors();
         /**
          * @brief Disables abort mode, connects all LabJacks and starts all streams.
          */

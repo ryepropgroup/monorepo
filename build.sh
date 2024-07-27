@@ -6,6 +6,7 @@ if [[ "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" ]]; t
     cmd.exe /c .configurevs.bat
 
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export x11-backend=false
     echo "********** MACH: Configuring the build with CMake **********"
     cmake engine-computer --preset=linux
 

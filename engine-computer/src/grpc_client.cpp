@@ -43,8 +43,17 @@ void ServiceClient::StartCommandStream() {
     // Data we are sending to the server.
     proto::DeviceInformation info;
 
-    // Add existing sequences to device information.
-    // TODO: Add existing devices to device information.
+    // Add existing devices and sequences to device information.
+    DeviceManager& deviceManager = DeviceManager::getInstance();
+    std::vector<std::shared_ptr<Sensor>> sensors = deviceManager.getSensors();
+    for (const auto& sensor : sensors) {
+        mach::proto::Device device;
+        device.set_pin(sensor->getLabJackPin());
+        device.set_type(proto::Device_DeviceType_SENSOR);
+        device.set_location(proto::Device_DeviceLocation_GSE);
+        info.mutable_devices()->insert({sensor->getName(), device});
+    }
+
     std::vector<std::string> sequences = SequenceManager::getInstance().getSequenceNames();
     for (const auto &sequence : sequences) {
         info.add_sequences(sequence);
@@ -56,7 +65,7 @@ void ServiceClient::StartCommandStream() {
 
     // The actual RPC.
     std::unique_ptr<grpc::ClientReader<proto::SequenceCommand>> reader(stub_->CommandStream(&context, info));
-    spdlog::info("MACH: Started command stream. Sent device information to server.");
+    spdlog::info("MACH: Sent device information to server. Listening for commands.");
 
     proto::SequenceCommand sequence;
     while (reader->Read(&sequence)) {
@@ -89,7 +98,7 @@ void ServiceClient::StartCommandStream() {
             spdlog::warn("MACH: Unknown command type '{}', ignoring!", type);
         }
     }
-    spdlog::info("MACH: GRPC command stream client finished.");
+    spdlog::info("MACH: GRPC client finished.");
 }
 
 static void startCommandStream(std::string target) {

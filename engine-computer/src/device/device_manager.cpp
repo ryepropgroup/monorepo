@@ -91,6 +91,14 @@ std::shared_ptr<mach::Sensor> mach::DeviceManager::getSensor(std::string sensorN
     return sensors[sensorName];
 }
 
+std::vector<std::shared_ptr<mach::Sensor>> mach::DeviceManager::getSensors() {
+    std::vector<std::shared_ptr<Sensor>> sensorList;
+    for (auto& sensor : sensors) {
+        sensorList.push_back(sensor.second);
+    }
+    return sensorList;
+}
+
 void mach::DeviceManager::printDevices() {
     for (auto& device : valves) {
         device.second.get()->print();

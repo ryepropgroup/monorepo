@@ -43,6 +43,9 @@ progress_bar_positions = {
     "p32": (914, 337, "horizontal", 2500),
     "t2": (729, 227, "vertical", 1000),
     "t3": (639, 378, "vertical", 1000),
+    "pinj": (1155, 654, "horizontal", 1000),
+    "p21": (817, 250, "horizontal", 2500),
+    "p31": (819, 398, "horizontal", 2500),
     # "pinJ": (300, 500, "horizontal"),
     # "lc": (300, 500, "horizontal"),
 }
@@ -53,6 +56,7 @@ sequence_positions ={
     "igniter": (205,600),
     "oxidizer": (275,600),
     "alternate_oxidizer": (345,600),
+    "cold_flow": (415,600),
 }
 
 class GUIApp:
