@@ -5,7 +5,7 @@ import threading
 import socket
 import json
 import ttkbootstrap as ttk
-
+ 
 # Constants
 ORIGINAL_WINDOW_WIDTH = 1280
 ORIGINAL_WINDOW_HEIGHT = 720
@@ -13,8 +13,8 @@ TCP_SERVER_IP = "127.0.0.1"
 TCP_SERVER_PORT = 6000
 PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar changes
 
-NEW_WINDOW_WIDTH = 1920  # Example new width
-NEW_WINDOW_HEIGHT = 1080  # Example new height
+NEW_WINDOW_WIDTH = 1920  # Enter new width
+NEW_WINDOW_HEIGHT = 1080  # Enter new height
 
 SCALE_X = NEW_WINDOW_WIDTH / ORIGINAL_WINDOW_WIDTH
 SCALE_Y = NEW_WINDOW_HEIGHT / ORIGINAL_WINDOW_HEIGHT
