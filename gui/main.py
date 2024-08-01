@@ -7,11 +7,31 @@ import json
 import ttkbootstrap as ttk
 
 # Constants
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+ORIGINAL_WINDOW_WIDTH = 1280
+ORIGINAL_WINDOW_HEIGHT = 720
 TCP_SERVER_IP = "127.0.0.1"
 TCP_SERVER_PORT = 6000
 PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar changes
+
+NEW_WINDOW_WIDTH = 1920  # Example new width
+NEW_WINDOW_HEIGHT = 1080  # Example new height
+
+SCALE_X = NEW_WINDOW_WIDTH / ORIGINAL_WINDOW_WIDTH
+SCALE_Y = NEW_WINDOW_HEIGHT / ORIGINAL_WINDOW_HEIGHT
+
+# Function to scale positions
+def scale_position(x, y, scale_x, scale_y):
+    return int(x * scale_x), int(y * scale_y)
+
+# Function to scale sizes
+def scale_size(width, height, scale_x, scale_y):
+    return int(width * scale_x), int(height * scale_y)
+
+# Function to scale progress bars
+def scale_progress_bar(x, y, orientation, length, scale_x, scale_y):
+    scaled_x, scaled_y = scale_position(x, y, scale_x, scale_y)
+    scaled_length = int(length * (scale_x if orientation == "horizontal" else scale_y))
+    return scaled_x, scaled_y, orientation, scaled_length
 
 # Example coordinates (to be adjusted based on visual inspection)
 button_positions = {
@@ -21,7 +41,7 @@ button_positions = {
     "v20": (946, 95),
     "v21": (487, 266),
     "v22": (784, 17),
-    "v23_no": (600, 92),
+    "v23_no": (607, 92),
     "v30": (945, 405),
     "v31": (488, 558),
     "v32": (486, 396),
@@ -37,42 +57,50 @@ progress_bar_positions = {
     "p10": (146, 261, "horizontal", 2500),
     "p20": (818, 250, "horizontal", 2500),
     "p30": (817, 399, "horizontal", 2500),
-    "p20": (1122, 161, "horizontal", 2500),
-    "p30": (1142, 437, "horizontal", 2500),
+    "p21": (1122, 161, "horizontal", 2500),
+    "p31": (1142, 437, "horizontal", 2500),
     "p22": (954, 230, "horizontal", 2500),
     "p32": (914, 337, "horizontal", 2500),
     "t2": (729, 227, "vertical", 1000),
     "t3": (639, 378, "vertical", 1000),
-    "pinj": (1155, 654, "horizontal", 1000),
-    "p21": (817, 250, "horizontal", 2500),
-    "p31": (819, 398, "horizontal", 2500),
-    # "pinJ": (300, 500, "horizontal"),
-    # "lc": (300, 500, "horizontal"),
+    # "pinj": (1155, 654, "horizontal", 1000),
 }
 
-sequence_positions ={
-    "stop": (65,600),
-    "ignition": (135,600),
-    "igniter": (205,600),
-    "oxidizer": (275,600),
-    "alternate_oxidizer": (345,600),
-    "cold_flow": (415,600),
+sequence_positions = {
+    "enter": (25, 650),
+    "ignition": (95, 650),
+    "igniter": (165, 650),
+    "oxidizer": (235, 650),
+    "alternate_oxidizer": (305, 650),
+    "cold_flow": (375, 650),
 }
+
+# Scaled button positions
+scaled_button_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in button_positions.items()}
+
+# Scaled progress bar positions
+scaled_progress_bar_positions = {
+    key: scale_progress_bar(x, y, orientation, length, SCALE_X, SCALE_Y)
+    for key, (x, y, orientation, length) in progress_bar_positions.items()
+}
+
+# Scaled sequence positions
+scaled_sequence_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in sequence_positions.items()}
 
 class GUIApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Valve Control and Sensor Monitoring")
-        self.root.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+        self.root.geometry(f"{NEW_WINDOW_WIDTH}x{NEW_WINDOW_HEIGHT}")
         self.root.resizable(False, False)  # Disable window resizing
 
         # Load and display background image
         self.background_image = Image.open("pid.png")
         self.background_image = self.background_image.resize(
-            (WINDOW_WIDTH, WINDOW_HEIGHT), Image.LANCZOS
+            (NEW_WINDOW_WIDTH, NEW_WINDOW_HEIGHT), Image.LANCZOS
         )
         self.bg_label = tk.Label(self.root)
-        self.bg_label.place(x=0, y=0, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.bg_label.place(x=0, y=0, width=NEW_WINDOW_WIDTH, height=NEW_WINDOW_HEIGHT)
         self.update_background_image()
 
         # Create buttons and progress bars
@@ -131,14 +159,15 @@ class GUIApp:
 
         # Creating buttons
         self.valve_buttons = {}
-        for valve, (x, y) in button_positions.items():
+        for valve, (x, y) in scaled_button_positions.items():
+            scaled_width, scaled_height = scale_size(72, 25, SCALE_X, SCALE_Y)
             open_btn = ttk.Button(
                 self.root,
                 text="Open",
                 style="Open.TButton",
                 command=lambda v=valve: self.control_valve(v, True),
             )
-            open_btn.place(x=x, y=y, width=72, height=25)
+            open_btn.place(x=x, y=y, width=scaled_width, height=scaled_height)
 
             close_btn = ttk.Button(
                 self.root,
@@ -147,32 +176,32 @@ class GUIApp:
                 command=lambda v=valve: self.control_valve(v, False),
             )
             close_btn.place(
-                x=x, y=y + 25, width=72, height=25
+                x=x, y=y + scaled_height, width=scaled_width, height=scaled_height
             )  # Adjusted to be vertically touching
 
             self.valve_buttons[valve] = (open_btn, close_btn)
 
         self.sequence_buttons = {}
-
-        for button, (x, y) in sequence_positions.items():
-            button = ttk.Button(
+        scaled_seq_width, scaled_seq_height = scale_size(70, 25, SCALE_X, SCALE_Y)
+        for button, (x, y) in scaled_sequence_positions.items():
+            btn = ttk.Button(
                 self.root,
                 text=button,
                 style="Sequence.TButton",
                 command=lambda v=button: self.send_message(f"sequence:{v}\n"),
             )
-            button.place(x=x, y=y, width=70, height=25)
-            self.sequence_buttons[button] = button
+            btn.place(x=x, y=y, width=scaled_seq_width, height=scaled_seq_height)
+            self.sequence_buttons[button] = btn
 
         # Creating progress bars
         self.sensor_bars = {}
         self.sensor_labels = {}
-        for sensor, (x, y, orientation, maxval) in progress_bar_positions.items():
+        for sensor, (x, y, orientation, maxval) in scaled_progress_bar_positions.items():
             if orientation == "vertical":
                 bar = ttk.Progressbar(
                     self.root, orient="vertical", mode="determinate", maximum=maxval
                 )
-                bar.place(x=x, y=y, height=88, width=PROGRESS_BAR_WIDTH)
+                bar.place(x=x, y=y, height=int(88 * SCALE_Y), width=int(PROGRESS_BAR_WIDTH * SCALE_X))
                 label = ttk.Label(
                     self.root,
                     text="0.00",
@@ -180,12 +209,12 @@ class GUIApp:
                     background="#333",
                     foreground="white",
                 )
-                label.place(x=x + PROGRESS_BAR_WIDTH // 2, y=y + 90, anchor="center")
+                label.place(x=x + int(PROGRESS_BAR_WIDTH * SCALE_X) // 2, y=y + int(90 * SCALE_Y), anchor="center")
             else:
                 bar = ttk.Progressbar(
                     self.root, orient="horizontal", mode="determinate", maximum=maxval
                 )
-                bar.place(x=x, y=y, width=95, height=PROGRESS_BAR_WIDTH)
+                bar.place(x=x, y=y, width=int(95 * SCALE_X), height=int(PROGRESS_BAR_WIDTH * SCALE_Y))
                 label = ttk.Label(
                     self.root,
                     text="0.00",
@@ -193,7 +222,7 @@ class GUIApp:
                     background="#333",
                     foreground="white",
                 )
-                label.place(x=x + 50, y=y + PROGRESS_BAR_WIDTH + 10, anchor="center")
+                label.place(x=x + int(50 * SCALE_X), y=y + int(PROGRESS_BAR_WIDTH * SCALE_Y) + int(10 * SCALE_Y), anchor="center")
 
             self.sensor_bars[sensor] = bar
             self.sensor_labels[sensor] = label
