@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from time import strftime
 from PIL import Image, ImageTk
 import threading
 import socket
@@ -102,6 +103,11 @@ class GUIApp:
         self.bg_label = tk.Label(self.root)
         self.bg_label.place(x=0, y=0, width=NEW_WINDOW_WIDTH, height=NEW_WINDOW_HEIGHT)
         self.update_background_image()
+
+        # Create the clock label
+        self.clock_label = ttk.Label(self.root, font=("Helvetica", 15), background="#FFFFFF", foreground="red")
+        self.clock_label.place(x=10, y=10)
+        self.update_time()
 
         # Create buttons and progress bars
         self.create_widgets()
@@ -226,6 +232,11 @@ class GUIApp:
 
             self.sensor_bars[sensor] = bar
             self.sensor_labels[sensor] = label
+
+    def update_time(self):
+        current_time = strftime('%H:%M:%S %p')
+        self.clock_label.config(text=current_time)
+        self.clock_label.after(1000, self.update_time)
 
     def control_valve(self, valve, state):
         if state == True:
