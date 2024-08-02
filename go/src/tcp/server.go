@@ -108,5 +108,5 @@ func (s *TCPServer) broadcastStatusUpdates() {
 
 func StartTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {
 	server := NewTCPServer(commandChan, statusChan)
-	server.startListening(":6000")
+	server.startListening("127.0.0.1:6000")
 }
