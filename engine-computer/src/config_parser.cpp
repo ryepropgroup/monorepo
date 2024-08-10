@@ -77,7 +77,7 @@ static void parseLabjackConfig(std::string file) {
             sensor->setNegativeChannel(sensorNode["negative_channel"].as<std::string>());
         }
         if (sensorNode["thermocouple_type"]) {
-            sensor->setThermocoupleType(sensorNode["thermocouple_type"].as<char>());
+            sensor->setThermocoupleType(sensorNode["thermocouple_type"].as<std::string>());
         }
 
         sensor->setLabjack(labJack);

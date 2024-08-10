@@ -14,7 +14,7 @@ class Valve : public Device<bool> {
         bool isOpen();
         void open();
         void close();
-        bool isNormallyOpen() { return port.ends_with("NO"); }
+        bool isNormallyOpen() { return this->name.ends_with("NO"); }
 
         void print() override;
 };

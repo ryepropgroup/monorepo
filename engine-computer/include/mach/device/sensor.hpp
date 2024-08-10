@@ -14,16 +14,17 @@ class Sensor : public Device<double> {
 
         void setLabjack(std::shared_ptr<LabJack> labjack) override;
 
-        void setThermocoupleType(char type);
+        void setThermocoupleType(std::string type);
         void setRange(double range);
         void setMultiplier(double multiplier);
         void setNegativeChannel(std::string channel);
+        std::string getThermocoupleType();
 
         void updateValue(double value);
         
         void print() override;
     private:
-        char thermocoupleType = '\0';
+        std::string thermocoupleType = "";
         double range = 0;
         double multiplier = 1.0;
         std::string negativeChannel = "";

@@ -88,6 +88,7 @@ static std::string getBroadcastAddress() {
     struct ifaddrs* ifaddr;
     if (getifaddrs(&ifaddr) == -1) {
         perror("getifaddrs");
+        spdlog::error("MACH: Failed to get network interfaces!");
         return "";
     }
 
@@ -95,24 +96,32 @@ static std::string getBroadcastAddress() {
 
     // Find an adapter where the assigned ip is 192.168.x.x.
     for (struct ifaddrs* ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET) {
-            struct sockaddr_in* addr = (struct sockaddr_in*)ifa->ifa_addr;
-            if (addr->sin_addr.s_addr >> 24 != 192 || (addr->sin_addr.s_addr >> 16 & 0xFF) != 168) {
-                continue;
-            }
-
-            struct sockaddr_in* netmask = (struct sockaddr_in*)ifa->ifa_netmask;
-            struct sockaddr_in broadcast;
-            broadcast.sin_family = AF_INET;
-            // Calculate broadcast address.
-            broadcast.sin_addr.s_addr = (addr->sin_addr.s_addr & netmask->sin_addr.s_addr) | (~netmask->sin_addr.s_addr);
-
-            char broadcast_ip[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &broadcast.sin_addr, broadcast_ip, INET_ADDRSTRLEN);
-
-            broadcast_address = std::string(broadcast_ip);
-            break;
+        if (!ifa->ifa_addr || ifa->ifa_addr->sa_family != AF_INET) {
+            continue;
         }
+
+        struct sockaddr_in* addr = (struct sockaddr_in*)ifa->ifa_addr;
+        // int first = addr->sin_addr.s_addr >> 24;
+        // int second = addr->sin_addr.s_addr >> 16 & 0xFF;
+        // int third = addr->sin_addr.s_addr >> 8 & 0xFF;
+        // int fourth = addr->sin_addr.s_addr & 0xFF;
+        // spdlog::info("Found: {}.{}.{}.{}", first, second, third, fourth);
+
+        if (addr->sin_addr.s_addr & 0xFF != 192 || (addr->sin_addr.s_addr >> 8 & 0xFF) != 168) {
+            continue;
+        }
+
+        struct sockaddr_in* netmask = (struct sockaddr_in*)ifa->ifa_netmask;
+        struct sockaddr_in broadcast;
+        broadcast.sin_family = AF_INET;
+        // Calculate broadcast address.
+        broadcast.sin_addr.s_addr = (addr->sin_addr.s_addr & netmask->sin_addr.s_addr) | (~netmask->sin_addr.s_addr);
+
+        char broadcast_ip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &broadcast.sin_addr, broadcast_ip, INET_ADDRSTRLEN);
+
+        broadcast_address = std::string(broadcast_ip);
+        break;
     }
 
     freeifaddrs(ifaddr);

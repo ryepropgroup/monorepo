@@ -27,11 +27,11 @@ static const std::map<std::string, double> THERM_TYPE_MAPPING = {
     {"S", 25.0}, {"N", 27.0}, {"B", 28.0}, {"C", 30.0}
 };
 
-void mach::Sensor::setThermocoupleType(char type) {
+void mach::Sensor::setThermocoupleType(std::string type) {
     thermocoupleType = type;
     // AIN#_EF_INDEX (thermocouple type)
     labJackSettings.first.push_back(std::format("{}_EF_INDEX", port));
-    labJackSettings.second.push_back(THERM_TYPE_MAPPING.at(std::string{type}));
+    labJackSettings.second.push_back(THERM_TYPE_MAPPING.at(type));
     // AIN#_EF_CONFIG_A (temperature unit)
     labJackSettings.first.push_back(std::format("{}_EF_CONFIG_A", port));
     labJackSettings.second.push_back(LABJACK_CELSIUS);
@@ -44,6 +44,10 @@ void mach::Sensor::setThermocoupleType(char type) {
     // AIN#_EF_CONFIG_E (CJC sensor offset, 0.0 for the on-board sensor)
     labJackSettings.first.push_back(std::format("{}_EF_CONFIG_E", port));
     labJackSettings.second.push_back(0.0);
+}
+
+std::string mach::Sensor::getThermocoupleType() {
+    return this->thermocoupleType;
 }
 
 void mach::Sensor::setRange(double range) {

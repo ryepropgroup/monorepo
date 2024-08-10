@@ -15,8 +15,8 @@ PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar ch
 
 engine_computer_ip = None
 
-NEW_WINDOW_WIDTH = 1920  # Enter new width
-NEW_WINDOW_HEIGHT = 1080  # Enter new height
+NEW_WINDOW_WIDTH = 1280  # Enter new width
+NEW_WINDOW_HEIGHT = 720  # Enter new height
 
 SCALE_X = NEW_WINDOW_WIDTH / ORIGINAL_WINDOW_WIDTH
 SCALE_Y = NEW_WINDOW_HEIGHT / ORIGINAL_WINDOW_HEIGHT
@@ -65,11 +65,14 @@ progress_bar_positions = {
     "p32": (914, 337, "horizontal", 2500),
     "t2": (729, 227, "vertical", 1000),
     "t3": (639, 378, "vertical", 1000),
-    # "pinj": (1155, 654, "horizontal", 1000),
+    "pinj": (1155, 654, "horizontal", 1000),
+    "inj1": (50, 50, "horizontal", 1000),
+    "inj2": (50, 125, "horizontal", 1000),
+    "ign": (50, 200, "horizontal", 1000),
 }
 
 sequence_positions = {
-    "enter": (25, 650),
+    "stop": (25, 650),
     "ignition": (95, 650),
     "igniter": (165, 650),
     "oxidizer": (235, 650),
@@ -112,6 +115,11 @@ class GUIApp:
 
         # Create buttons and progress bars
         self.create_widgets()
+
+        self.start_listening_thread(6969)
+        # global engine_computer_ip
+        # engine_computer_ip = "127.0.0.1"
+        # self.start_tcp_communication()
 
     def update_background_image(self):
         # Resize background image to fit the static window size
@@ -282,26 +290,24 @@ class GUIApp:
         for valve, state in values.items():
             valve = valve.lower()
             state = state == 1
-            if valve.startswith("v"):
-                open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
-                if open_btn and close_btn:
-                    if not "_no" in valve:
-                        state = not state
-                    if state:
-                        open_btn.config(state="disabled")
-                        close_btn.config(state="normal")
-                    else:
-                        open_btn.config(state="normal")
-                        close_btn.config(state="disabled")
+            open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
+            if open_btn and close_btn:
+                if not "_no" in valve:
+                    state = not state
+                if state:
+                    open_btn.config(state="disabled")
+                    close_btn.config(state="normal")
+                else:
+                    open_btn.config(state="normal")
+                    close_btn.config(state="disabled")
 
         for sensor, value in values.items():
             sensor = sensor.lower()
-            if sensor.startswith("p") or sensor.startswith("t"):
-                bar = self.sensor_bars.get(sensor)
-                label = self.sensor_labels.get(sensor)
-                if bar and label:
-                    bar["value"] = value
-                    label.config(text=f"{value:.2f}")
+            bar = self.sensor_bars.get(sensor)
+            label = self.sensor_labels.get(sensor)
+            if bar and label:
+                bar["value"] = value
+                label.config(text=f"{value:.2f}")
         # self.root.after(1000, self.update_gui_periodically)
 
     def update_gui_periodically(self):
@@ -345,5 +351,4 @@ class GUIApp:
 if __name__ == "__main__":
     root = ttk.Window(themename="darkly")
     app = GUIApp(root)
-    app.start_listening_thread(6969)
     root.mainloop()

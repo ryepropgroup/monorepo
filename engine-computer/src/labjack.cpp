@@ -106,10 +106,14 @@ bool mach::LabJack::readStream() {
         // sensors[i]->updateValue(data[i]);
         // state[sensors[i]->getName()] = data[i];
         double value;
-        LJM_eReadName(handle, sensors[i]->getPort().c_str(), &value);
+        if (sensors[i]->getThermocoupleType() == "") {
+            LJM_eReadName(handle, sensors[i]->getPort().c_str(), &value);
+        } else {
+            LJM_eReadName(handle, (sensors[i]->getPort() + "_EF_READ_A").c_str(), &value);
+        }
         sensors[i]->updateValue(value);
         state[sensors[i]->getName()] = sensors[i]->getValue();
-        
+        // spdlog::info("Sensor: {}, Value: {}", sensors[i]->getName(), sensors[i]->getValue());
     }
 
     udouble ljbits{};
