@@ -6,7 +6,7 @@ steps:
     duration: 0.650
 
   - action: OPEN
-    valve: V
+    valve: V30
 
   - action: SLEEP
     duration: 4
