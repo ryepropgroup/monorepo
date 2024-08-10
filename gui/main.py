@@ -10,9 +10,10 @@ import ttkbootstrap as ttk
 # Constants
 ORIGINAL_WINDOW_WIDTH = 1280
 ORIGINAL_WINDOW_HEIGHT = 720
-TCP_SERVER_IP = "127.0.0.1"
 TCP_SERVER_PORT = 6000
 PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar changes
+
+engine_computer_ip = None
 
 NEW_WINDOW_WIDTH = 1920  # Enter new width
 NEW_WINDOW_HEIGHT = 1080  # Enter new height
@@ -111,9 +112,6 @@ class GUIApp:
 
         # Create buttons and progress bars
         self.create_widgets()
-
-        # Start TCP communication thread
-        self.start_tcp_communication()
 
     def update_background_image(self):
         # Resize background image to fit the static window size
@@ -256,7 +254,8 @@ class GUIApp:
     def start_tcp_communication(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.sock.connect((TCP_SERVER_IP, TCP_SERVER_PORT))
+            print(f"MACH: Connecting to server at {engine_computer_ip}:{TCP_SERVER_PORT}.")
+            self.sock.connect((engine_computer_ip, TCP_SERVER_PORT))
             threading.Thread(target=self.tcp_communication_thread, daemon=True).start()
         except ConnectionError as e:
             print(f"Failed to connect to server: {e}")
@@ -307,9 +306,44 @@ class GUIApp:
 
     def update_gui_periodically(self):
         pass  # Implementation can include periodic tasks if needed
+    
+    def update_server_address(self, ip):
+        global engine_computer_ip
+        if ip == engine_computer_ip:
+            return
 
+        engine_computer_ip = ip
+        # Start TCP communication thread
+        self.start_tcp_communication()
+
+
+    def listen_for_broadcast(self, port):
+        # Create a UDP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Enable the socket to receive broadcasts.
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        sock.bind(("", port))
+        
+        print(f"MACH: Listening for server broadcast messages on port {port}.")
+
+        while True:
+            # Receive broadcast.
+            data, addr = sock.recvfrom(1024)  # Buffer size is 1024 bytes
+            message = data.decode('utf-8')
+            if message == "MACH Engine Computer":
+                print(f"MACH: Found MACH Engine Computer at IP: {addr}.")
+                self.update_server_address(addr[0])
+                return
+
+    def start_listening_thread(self, port):
+        listener_thread = threading.Thread(target=self.listen_for_broadcast, args=(port,))
+        # Makes the thread exit when the main program exits.
+        listener_thread.daemon = True
+        listener_thread.start()
+        return listener_thread
 
 if __name__ == "__main__":
     root = ttk.Window(themename="darkly")
     app = GUIApp(root)
+    app.start_listening_thread(6969)
     root.mainloop()

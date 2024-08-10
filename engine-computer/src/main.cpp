@@ -14,13 +14,23 @@
 #include "mach/sequences/check_action.hpp"
 #include "mach/grpc_client.hpp"
 #include "mach/gui.hpp"
+#include "absl/flags/flag.h"
+#include "absl/flags/parse.h"
 
 #define LABJACK_CONFIG std::string("config/labjacks/")
 #define REMOTE_CONFIG std::string("config/remote.yml")
 #define SEQUENCES_CONFIG std::string("config/sequences/")
 
+ABSL_FLAG(bool, demo, false, "Demo mode");
+
+static bool demo = false;
+
 int main(int argc, char* argv[]) {
     spdlog::info("MACH: Hello World!");
+    absl::ParseCommandLine(argc, argv);
+
+    demo = absl::GetFlag(FLAGS_demo);
+    spdlog::info("MACH: Demo mode: {}", demo);
 
     // Read configuration 🤓
     mach::parseAllLabjacks(LABJACK_CONFIG);
@@ -48,12 +58,12 @@ int main(int argc, char* argv[]) {
     mach::grpcStartClient(argc, argv);
 
     // Start GUI.
-    mach::gui::startGUI(argc, argv);
+    // mach::gui::startGUI(argc, argv);
 
     spdlog::info("MACH: Reached end of main."); //🧏‍♂️🤫
     while (true) {}
 }
 
 bool mach::isDemo() {
-    return std::getenv("MACH_DEMO") != nullptr;
+    return demo;
 }

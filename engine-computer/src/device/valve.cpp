@@ -9,7 +9,7 @@ bool mach::Valve::isOpen() {
 
 void mach::Valve::open() {
     spdlog::info("MACH: Opening valve '{}'.", this->getName());
-    if (this->getName().ends_with("NO")) {
+    if (this->isNormallyOpen()) {
         labjack->setHigh(port);
     } else {
         labjack->setLow(port);
@@ -18,7 +18,7 @@ void mach::Valve::open() {
 
 void mach::Valve::close() {
     spdlog::info("MACH: Closing valve '{}'.", this->getName());
-    if (this->getName().ends_with("NO")) {
+    if (this->isNormallyOpen()) {
         labjack->setLow(port);
     } else {
         labjack->setHigh(port);

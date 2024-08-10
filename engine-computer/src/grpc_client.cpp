@@ -4,8 +4,8 @@
 #include <chrono>
 #include <functional>
 #include <spdlog/spdlog.h>
+#include <unordered_map>
 #include "absl/flags/flag.h"
-#include "absl/flags/parse.h"
 #include "messages.pb.h"
 #include "mach/sequences/sequence_manager.hpp"
 #include "mach/executor.hpp"
@@ -14,8 +14,9 @@
 #include "mach/thread_safe_queue.hpp"
 #include "mach/sequences/open_action.hpp"
 #include "mach/sequences/close_action.hpp"
+#include "mach/broadcast.hpp"
 
-ABSL_FLAG(std::string, target, "localhost:50051", "Server address");
+ABSL_FLAG(std::string, ip, "localhost:50051", "Server address");
 
 namespace mach {
 
@@ -114,15 +115,16 @@ static void startSensorDataStream(std::string target) {
 }
 
 void grpcStartClient(int argc, char **argv) {
-    absl::ParseCommandLine(argc, argv);
     // Instantiate the client. It requires a channel, out of which the actual RPCs
     // are created. This channel models a connection to an endpoint specified by
     // the argument "--target=" which is the only expected argument.
-    std::string target_str = absl::GetFlag(FLAGS_target);
+    std::string target_str = absl::GetFlag(FLAGS_ip);
 
-    // std::thread(startServerThread, target_str).detach();
     std::thread(startCommandStream, target_str).detach(); // TODO
     std::thread(startSensorDataStream, target_str).detach(); // TODO
+
+    // Start broadcasting the server to the network.
+    startBroadcastingServer();
 }
 
 void addSensorData(std::unordered_map<std::string, double> data) {
