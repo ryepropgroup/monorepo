@@ -100,7 +100,7 @@ class GUIApp:
         self.root.resizable(False, False)  # Disable window resizing
 
         # Load and display background image
-        self.background_image = Image.open("pid.png")
+        self.background_image = Image.open("pid_v2.png")
         self.background_image = self.background_image.resize(
             (NEW_WINDOW_WIDTH, NEW_WINDOW_HEIGHT), Image.LANCZOS
         )
