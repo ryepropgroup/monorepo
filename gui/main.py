@@ -15,8 +15,8 @@ PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar ch
 
 engine_computer_ip = None
 
-NEW_WINDOW_WIDTH = 1280  # Enter new width
-NEW_WINDOW_HEIGHT = 720  # Enter new height
+NEW_WINDOW_WIDTH = 1920  # Enter new width
+NEW_WINDOW_HEIGHT = 1040  # Enter new height
 
 SCALE_X = NEW_WINDOW_WIDTH / ORIGINAL_WINDOW_WIDTH
 SCALE_Y = NEW_WINDOW_HEIGHT / ORIGINAL_WINDOW_HEIGHT
@@ -100,7 +100,7 @@ class GUIApp:
         self.root.resizable(False, False)  # Disable window resizing
 
         # Load and display background image
-        self.background_image = Image.open("pid_v2.png")
+        self.background_image = Image.open("pid_v3.png")
         self.background_image = self.background_image.resize(
             (NEW_WINDOW_WIDTH, NEW_WINDOW_HEIGHT), Image.LANCZOS
         )
