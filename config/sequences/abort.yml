@@ -1,3 +1,45 @@
 steps:
-  - action: OPEN
+  - action: CLOSE
+    valve: V10
+
+  - action: CLOSE
+    valve: V20
+
+  - action: CLOSE
+    valve: V30
+
+  - action: CLOSE
+    valve: V31
+
+  - action: CLOSE
+    valve: V32
+
+  - action: CLOSE
     valve: V34
+
+  - action: CLOSE
+    valve: V36
+
+  - action: CLOSE
+    valve: V37
+
+  - action: CLOSE
+    valve: V11_NO
+
+  - action: OPEN
+    valve: V12_NO
+
+  - action: CLOSE
+    valve: V22
+
+  - action: OPEN
+    valve: V23_NO
+
+  - action: CLOSE
+    valve: V33
+
+  - action: OPEN
+    valve: V35_NO
+
+  - action: CLOSE
+    valve: V38_NO
