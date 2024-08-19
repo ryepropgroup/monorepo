@@ -15,8 +15,8 @@ PROGRESS_BAR_WIDTH = 20  # Adjust this value if the width of the progress bar ch
 
 engine_computer_ip = None
 
-NEW_WINDOW_WIDTH = 1280  # Enter new width
-NEW_WINDOW_HEIGHT = 720  # Enter new height
+NEW_WINDOW_WIDTH = 1920  # Enter new width
+NEW_WINDOW_HEIGHT = 1040  # Enter new height
 
 SCALE_X = NEW_WINDOW_WIDTH / ORIGINAL_WINDOW_WIDTH
 SCALE_Y = NEW_WINDOW_HEIGHT / ORIGINAL_WINDOW_HEIGHT
@@ -39,40 +39,41 @@ def scale_progress_bar(x, y, orientation, length, scale_x, scale_y):
 button_positions = {
     "v11_no": (185, 420),
     "v10": (297, 235),
-    "v12_no": (300, 420),
-    "v20": (946, 95),
+    "v12_no": (301, 420),
+    "v20": (945, 92),
     "v21": (487, 266),
     "v22": (784, 17),
     "v23_no": (607, 92),
     "v30": (945, 405),
-    "v31": (488, 558),
+    "v31": (487, 555),
     "v32": (486, 396),
     "v33": (707, 455),
     "v34": (558, 326),
-    "v35_no": (484, 644),
+    "v35_no": (484, 640),
     "v36": (629, 642),
-    "v37": (729, 598),
-    "v38_no": (820, 659),
+    "v37": (727, 598),
+    "v38_no": (819, 659),
 }
 
 progress_bar_positions = {
-    "p10": (146, 261, "horizontal", 2500),
-    "p20": (818, 250, "horizontal", 2500),
-    "p30": (817, 399, "horizontal", 2500),
-    "p21": (1122, 161, "horizontal", 2500),
-    "p31": (1142, 437, "horizontal", 2500),
-    "p22": (954, 230, "horizontal", 2500),
-    "p32": (914, 337, "horizontal", 2500),
+    "p10": (147, 261, "horizontal", 2500),
+    "p20": (1121, 161, "horizontal", 2500), #818 250
+    "p30": (1141, 437, "horizontal", 2500), 
+    "p21": (817, 250, "horizontal", 2500),
+    "p31": (818, 399, "horizontal", 2500),
+    "p22": (953, 230, "horizontal", 2500),
+    "p32": (913, 337, "horizontal", 2500),
     "t2": (729, 227, "vertical", 1000),
-    "t3": (639, 378, "vertical", 1000),
-    "pinj": (1155, 654, "horizontal", 1000),
-    "inj1": (50, 50, "horizontal", 1000),
-    "inj2": (50, 125, "horizontal", 1000),
-    "ign": (50, 200, "horizontal", 1000),
+    "t3": (635, 377, "vertical", 1000),
+    "pinj": (1158, 97, "horizontal", 1000),
+    "inj1": (1164, 510, "horizontal", 1000),
+    "inj2": (1163, 568, "horizontal", 1000),
+    "ign": (1164, 627, "horizontal", 1000),
+    "lc": (1159, 34, "horizontal", 1000)
 }
 
 sequence_positions = {
-    "stop": (25, 650),
+    "reset": (25, 650),
     "ignition": (95, 650),
     "igniter": (165, 650),
     "oxidizer": (235, 650),
@@ -100,7 +101,7 @@ class GUIApp:
         self.root.resizable(False, False)  # Disable window resizing
 
         # Load and display background image
-        self.background_image = Image.open("pid.png")
+        self.background_image = Image.open("pid_v3.png")
         self.background_image = self.background_image.resize(
             (NEW_WINDOW_WIDTH, NEW_WINDOW_HEIGHT), Image.LANCZOS
         )
@@ -110,7 +111,7 @@ class GUIApp:
 
         # Create the clock label
         self.clock_label = ttk.Label(self.root, font=("Helvetica", 15), background="#FFFFFF", foreground="red")
-        self.clock_label.place(x=10, y=10)
+        self.clock_label.place(x=100, y=200)
         self.update_time()
 
         # Create buttons and progress bars

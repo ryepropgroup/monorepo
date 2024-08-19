@@ -2,9 +2,6 @@ steps:
   - action: CLOSE
     valve: V10
 
-  # - action: CLOSE
-  #   valve: V21
-
   - action: CLOSE
     valve: V20
 
