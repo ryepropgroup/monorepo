@@ -75,7 +75,7 @@ progress_bar_positions = {
 sequence_positions = {
     "reset": (25, 650),
     "ignition": (95, 650),
-    "igniter": (165, 650),
+    "ematch_test": (165, 650),
     "oxidizer": (235, 650),
     "alternate_oxidizer": (305, 650),
     "cold_flow": (375, 650),
