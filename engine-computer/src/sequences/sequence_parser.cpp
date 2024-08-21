@@ -38,6 +38,11 @@ static void parseSequence(std::string file) {
     spdlog::info("MACH: Parsing sequence from file '{}.yml'", sequenceName);
 
     ActionFactory& actionFactory = ActionFactory::getInstance();
+
+    YAML::Node override = config["override"];
+    if (override) {
+        sequence->setOverride(override.as<bool>());
+    }
     
     YAML::Node steps = config["steps"];
     for (YAML::const_iterator it = steps.begin(); it != steps.end(); it++) {

@@ -2,7 +2,6 @@ package tcp
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"net"
 	"strings"
@@ -49,7 +48,6 @@ func (s *TCPServer) handleConnection(conn net.Conn) {
 			break
 		}
 		msg = strings.TrimSpace(msg)
-		fmt.Println(msg)
 
 		cmd := &messages.SequenceCommand{
 			Sequence: msg,

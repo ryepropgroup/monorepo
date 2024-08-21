@@ -9,9 +9,7 @@ namespace mach {
     
 class Sequence {
     public:
-        Sequence(std::string name) : name(name), actions() {
-            this->override = name == "abort";
-        }
+        Sequence(std::string name) : name(name), actions() {}
 
         /**
          * @brief Adds an action to the sequence.
@@ -31,7 +29,7 @@ class Sequence {
             DeviceManager& deviceManager = DeviceManager::getInstance();
             for (auto& action : actions) {
                 if (deviceManager.isAborting() && !this->override) {
-                    spdlog::info("Aborting sequence '{}'", name);
+                    spdlog::info("Aborting sequence '{}'!", name);
                     return;
                 }
                 action->execute(this->override);
@@ -44,6 +42,10 @@ class Sequence {
 
         bool isOverride() {
             return override;
+        }
+
+        void setOverride(bool override) {
+            this->override = override;
         }
 
     private:

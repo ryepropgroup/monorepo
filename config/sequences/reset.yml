@@ -1,3 +1,8 @@
+# This setting indicates that this sequence will 
+# cancel and override any other currently running 
+# sequence.
+override: true
+
 steps:
   - action: CLOSE
     valve: V10

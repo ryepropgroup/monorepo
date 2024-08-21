@@ -120,8 +120,8 @@ void grpcStartClient(int argc, char **argv) {
     // the argument "--target=" which is the only expected argument.
     std::string target_str = absl::GetFlag(FLAGS_ip);
 
-    std::thread(startCommandStream, target_str).detach(); // TODO
-    std::thread(startSensorDataStream, target_str).detach(); // TODO
+    std::thread(startCommandStream, target_str).detach();
+    std::thread(startSensorDataStream, target_str).detach();
 
     // Start broadcasting the server to the network.
     startBroadcastingServer();

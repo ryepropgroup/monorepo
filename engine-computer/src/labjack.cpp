@@ -103,8 +103,6 @@ bool mach::LabJack::readStream() {
 
     for (int i = 0; i < sensors.size(); i++) {
         // Update state internally and in data packet.
-        // sensors[i]->updateValue(data[i]);
-        // state[sensors[i]->getName()] = data[i];
         double value;
         if (sensors[i]->getThermocoupleType() == "") {
             LJM_eReadName(handle, sensors[i]->getPort().c_str(), &value);

@@ -19,6 +19,8 @@
     #include <unistd.h>
 #endif
 
+static std::string broadcastIp = "";
+
 #ifdef _WIN32
 static std::string getBroadcastAddress() {
     std::unique_ptr<IP_ADAPTER_ADDRESSES[]> adapter_addresses;
@@ -190,7 +192,7 @@ static void sendBroadcastMessage(int sock, const struct sockaddr_in& broadcastAd
         return;
     }
 
-    spdlog::info("MACH: Broadcast message sent.");
+    // spdlog::info("MACH: Broadcast message sent.");
 }
 
 static void closeSocket(int sock) {
@@ -212,8 +214,11 @@ static int broadcastServer() {
         return -1;
     }
 
-    std::string broadcastIp = getBroadcastAddress();
-    spdlog::info("MACH: Broadcasting server on broadcast IP: {}", broadcastIp);
+    std::string newBroadcastIp = getBroadcastAddress();
+    if (broadcastIp != newBroadcastIp) {
+        broadcastIp = newBroadcastIp;
+        spdlog::info("MACH: Broadcasting server on broadcast IP: {}", broadcastIp);
+    }
     struct sockaddr_in broadcastAddr = setupBroadcastAddress(broadcastIp);
     sendBroadcastMessage(sock, broadcastAddr);
 
