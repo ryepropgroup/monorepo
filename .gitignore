@@ -15,3 +15,4 @@ go/src/go.sum
 gui/.swp
 gui/vvv
 go/src/*.csv
+data/

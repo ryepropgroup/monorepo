@@ -42,6 +42,8 @@ class DeviceManager {
         void printDevices();
         bool isAborting();
         bool sleepOrAbort(std::chrono::milliseconds duration);
+        void enableAbortMode();
+        void disableAbortMode();
     
     private:
         DeviceManager() {}

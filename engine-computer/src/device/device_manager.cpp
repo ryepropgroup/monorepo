@@ -33,6 +33,10 @@ void mach::DeviceManager::startAllLabjackStreams() {
     std::thread(readLabjackStreams, std::ref(labJacks)).detach();
 }
 
+/**
+ * @deprecated This function was only used for GUI and may be 
+ * removed in the future.
+ */
 void mach::DeviceManager::abortAllLabjacks() {
     spdlog::info("MACH: Aborting all sequences.");
     abortFlag = true;
@@ -40,6 +44,10 @@ void mach::DeviceManager::abortAllLabjacks() {
     mach::Executor::getInstance().executeSequence("abort");
 }
 
+/**
+ * @deprecated This function was only used for GUI and may be 
+ * removed in the future.
+ */
 void mach::DeviceManager::disconnectAllLabjacks() {
     if (abortFlag) {
         spdlog::info("MACH: Already disconnected, skipping.");
@@ -55,6 +63,10 @@ void mach::DeviceManager::disconnectAllLabjacks() {
     }
 }
 
+/**
+ * @deprecated This function was only used for GUI and may be 
+ * removed in the future.
+ */
 void mach::DeviceManager::connectAllLabjacks() {
     spdlog::info("MACH: Connecting all labjacks.");
     for (auto& labJack : labJacks) {
@@ -62,6 +74,10 @@ void mach::DeviceManager::connectAllLabjacks() {
     }
 }
 
+/**
+ * @deprecated This function was only used for GUI and may be 
+ * removed in the future.
+ */
 void mach::DeviceManager::reconnectAllLabjacks() {
     this->disconnectAllLabjacks();
     spdlog::info("MACH: Reconnecting all labjacks.");
@@ -71,15 +87,33 @@ void mach::DeviceManager::reconnectAllLabjacks() {
     this->startAllLabjackStreams();
 }
 
+void mach::DeviceManager::enableAbortMode() {
+    spdlog::info("MACH: Enabling abort mode.");
+    abortFlag = true;
+    abortCondition.notify_all();
+}
+
+void mach::DeviceManager::disableAbortMode() {
+    spdlog::info("MACH: Disabling abort mode.");
+    abortFlag = false;
+}
+
 static void readLabjackStreams(std::list<std::shared_ptr<mach::LabJack>>& labJacks) {
     spdlog::info("MACH: Started reading LabJack streams.");
     while (true) { // TODO Abort?
+        long start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         for (auto& labJack : labJacks) {
             if (!labJack->readStream()) {
                 spdlog::info("MACH: Stopped reading all LabJack streams.");
                 return;
             }
         }
+        long end = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        if (end - start == 0) {
+            // Slow down man...
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+
     }
 }
 

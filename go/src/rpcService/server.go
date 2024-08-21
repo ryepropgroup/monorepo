@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,9 +27,10 @@ type server struct {
 	deviceInfo      *messages.DeviceInformation
 	currentFileName string
 	sensorOrder     []string
-	unsentData      []*messages.SensorData
 	mu              sync.Mutex
 	isFileReady     bool
+	file            *os.File
+	csvWriter       *csv.Writer
 }
 
 func (s *server) writeData(file *os.File, data *messages.SensorData) error {
@@ -76,7 +78,6 @@ func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *mess
 	return &server{
 		commandChan: commandChan,
 		statusChan:  statusChan,
-		unsentData:  make([]*messages.SensorData, 0),
 		isFileReady: false,
 	}
 }
@@ -92,23 +93,49 @@ func (s *server) updateSensorOrder() {
 }
 
 func (s *server) createCSVFile() error {
-	headers := []string{"ts"}
+	s.closeCSVFile()
+	headers := []string{"timestamp"}
 	headers = append(headers, s.sensorOrder...)
 
 	cTime := time.Now()
-	fName := fmt.Sprintf("sensor_data_%s.csv", cTime.Format("2006-01-02_15-04-05"))
+	fName := fmt.Sprintf("../../data/sensor_data_%s.csv", cTime.Format("2006-01-02_15-04-05"))
 
-	file, err := os.Create(fName)
+	// Create data directory if it doesn't exist.
+	if _, err := os.Stat("../../data"); os.IsNotExist(err) {
+		os.Mkdir("../../data", 0755)
+	}
+
+	fmt.Println("MACH: Creating new file:", fName)
+	file, err := os.OpenFile(fName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-	writer := csv.NewWriter(file)
+
+	s.csvWriter = csv.NewWriter(file)
 	s.currentFileName = fName
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.file = file
 	s.isFileReady = true
-	return writer.Write(headers)
+	err = s.csvWriter.Write(headers)
+	if err != nil {
+		return err
+	}
+	s.csvWriter.Flush()
+	return nil
+}
+
+func (s *server) closeCSVFile() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if !s.isFileReady {
+		return nil
+	}
+	println("MACH: Closing file:", s.currentFileName)
+	s.isFileReady = false
+	s.currentFileName = ""
+	s.file.Close()
+	return nil
 }
 
 func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStreamServer) error {
@@ -130,36 +157,19 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 		}
 		// fmt.Println(data)
 		// write Data
+
 		s.mu.Lock()
 		if !s.isFileReady {
-			s.unsentData = append(s.unsentData, data)
 			s.mu.Unlock()
 			continue
 		}
 		s.mu.Unlock()
 
-		if s.currentFileName == "" {
-			fName, err := getMostRecentSensorData("sensor_data_")
-			if err != nil {
-				return err
-			}
-			if fName == "" {
-				return fmt.Errorf("no sensor data files found")
-			}
-			s.currentFileName = fName
-		}
-
-		file, err := os.OpenFile(s.currentFileName, os.O_APPEND|os.O_WRONLY, 0644)
-		if err != nil {
+		if err := s.writeData(s.file, data); err != nil {
+			fmt.Println("MACH: Error writing data to file, closing file!")
+			s.closeCSVFile()
 			return err
 		}
-
-		if err := s.writeData(file, data); err != nil {
-			file.Close()
-			return err
-		}
-
-		file.Close()
 
 		// Forward sensor data to TCP clients
 		s.statusChan <- data
@@ -169,40 +179,33 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 func (s *server) CommandStream(info *messages.DeviceInformation, stream service.EngineComputer_CommandStreamServer) error {
 	s.deviceInfo = info
 	s.updateSensorOrder()
-	s.createCSVFile()
 
-	s.mu.Lock()
-	buff := s.unsentData
-	s.unsentData = make([]*messages.SensorData, 0)
-	s.mu.Unlock()
-
-	file, err := os.OpenFile(s.currentFileName, os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	writer := csv.NewWriter(file)
-	row := []string{"timestamp"}
-	row = append(row, s.sensorOrder...)
-	if err := writer.Write(row); err != nil {
-		return err
-	}
-	writer.Flush()
-
-	for _, data := range buff {
-		if err := s.writeData(file, data); err != nil {
-			return err
-		}
-	}
-
+	// TODO: Add different types of commands?
+	// i.e. if cmd.Command == messages.Command_STOP...
 	for cmd := range s.commandChan {
+		if strings.HasPrefix(cmd.Sequence, "go:") {
+			s.HandleGoCommand(cmd.Sequence)
+			continue
+		}
+
 		if err := stream.Send(cmd); err != nil {
 			log.Printf("Error sending command: %v", err)
 			return err
 		}
 	}
 	return nil
+}
+
+func (s *server) HandleGoCommand(command string) {
+	if command == "go:start_data" {
+		fmt.Println("MACH: Starting data collection.")
+		s.createCSVFile()
+	} else if command == "go:stop_data" {
+		fmt.Println("MACH: Stopping data collection.")
+		s.closeCSVFile()
+	} else {
+		log.Printf("Unknown go command: %s", command)
+	}
 }
 
 func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {
