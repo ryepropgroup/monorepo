@@ -56,6 +56,10 @@ button_positions = {
     "v38_no": (819, 659),
 }
 
+state_positions = {
+    "igniter": (1176, 678),
+}
+
 progress_bar_positions = {
     "p10": (147, 261, "horizontal", 2500),
     "p20": (1121, 161, "horizontal", 2500), #818 250
@@ -67,9 +71,9 @@ progress_bar_positions = {
     "t2": (729, 227, "vertical", 1000),
     "t3": (635, 377, "vertical", 1000),
     "pinj": (1158, 97, "horizontal", 1000),
-    "inj1": (1164, 510, "horizontal", 1000),
-    "inj2": (1163, 568, "horizontal", 1000),
-    "ign": (1164, 627, "horizontal", 1000),
+    "inj1": (1164, 500, "horizontal", 1000),
+    "inj2": (1163, 558, "horizontal", 1000),
+    "ign": (1164, 617, "horizontal", 1000),
     "lc": (1159, 34, "horizontal", 1000)
 }
 
@@ -79,6 +83,7 @@ sequences = ["reset", "ignition", "ematch_test", "oxidizer", "alternate_oxidizer
 
 # Scaled button positions
 scaled_button_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in button_positions.items()}
+scaled_state_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in state_positions.items()}
 
 # Scaled progress bar positions
 scaled_progress_bar_positions = {
@@ -220,6 +225,20 @@ class GUIApp:
             )  # Adjusted to be vertically touching
 
             self.valve_buttons[valve] = (open_btn, close_btn)
+
+        # Creating state buttons (no toggle)
+        self.state_buttons = {}
+        for name, (x, y) in scaled_state_positions.items():
+            scaled_width, scaled_height = scale_size(72, 25, SCALE_X, SCALE_Y)
+            btn = ttk.Button(
+                self.root,
+                text="LOW",
+                style="Close.TButton",
+            )
+            
+            btn.place(x=x, y=y, width=scaled_width, height=scaled_height)
+
+            self.state_buttons[name] = (btn)
         
         # Place sequence label
         (x, y) = scale_size(sequences_start_position[0], sequences_start_position[1] - 25, SCALE_X, SCALE_Y)
@@ -342,12 +361,11 @@ class GUIApp:
         try:
             data = json.loads(data)
         except Exception as e:
-            # print(e)
-            # print(data)
             return
             
         values = data.get("values", {})
         for valve, state in values.items():
+            print(valve, state)
             valve = valve.lower()
             state = state == 1
             open_btn, close_btn = self.valve_buttons.get(valve, (None, None))
@@ -360,6 +378,12 @@ class GUIApp:
                 else:
                     open_btn.config(state="normal")
                     close_btn.config(state="disabled")
+            state_btn = self.state_buttons.get(valve)
+            if state_btn:
+                if state:
+                    state_btn.config(text="HIGH", style="Open.TButton")
+                else:
+                    state_btn.config(text="LOW", style="Close.TButton")
 
         for sensor, value in values.items():
             sensor = sensor.lower()
@@ -396,8 +420,7 @@ class GUIApp:
                     # Enable the socket to receive broadcasts.
                     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
                     sock.bind(("0.0.0.0", port))
-                    print(f"MACH: Listening for server broadcast messages on port {port}.")
-                    
+                    print(f"MACH: Listening for server broadcast messages on port {port}.")  
                 data, addr = sock.recvfrom(1024)  # Buffer size is 1024 bytes
                 message = data.decode('utf-8')
                 if message == "MACH Engine Computer":
