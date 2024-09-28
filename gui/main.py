@@ -80,6 +80,8 @@ sequences = ["reset", "e-match", "ignition"]
 # Scaled button positions
 scaled_button_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in button_positions.items()}
 scaled_state_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in state_positions.items()}
+start_data_btn = None
+stop_data_btn = None
 
 # Scaled progress bar positions
 scaled_progress_bar_positions = {
@@ -190,13 +192,13 @@ class GUIApp:
         
         scaled_x, scaled_y = scale_position(250, 85, SCALE_X, SCALE_Y)
         scaled_width, scaled_height = scale_size(100, 25, SCALE_X, SCALE_Y)
-        start_data_btn = ttk.Button(
+        stop_data_btn = ttk.Button(
             self.root,
             text="Stop Recording",
             style="Close.TButton",
             command=lambda: self.send_message("go:stop_data\n"),
         )
-        start_data_btn.place(x=scaled_x, y=scaled_y, width=scaled_width, height=scaled_height)
+        stop_data_btn.place(x=scaled_x, y=scaled_y, width=scaled_width, height=scaled_height)
 
         # Creating buttons
         self.valve_buttons = {}
@@ -358,6 +360,16 @@ class GUIApp:
             data = json.loads(data)
         except Exception as e:
             return
+        
+        state = data.get("state", {})
+        if "recording_data" in state:
+            recording_data = state["recording_data"]
+            if recording_data:
+                start_data_btn.config(state="disabled")
+                stop_data_btn.config(state="normal")
+            else:
+                start_data_btn.config(state="normal")
+                stop_data_btn.config(state="disabled")
             
         values = data.get("values", {})
         for valve, state in values.items():

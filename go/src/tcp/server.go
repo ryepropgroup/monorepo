@@ -87,6 +87,20 @@ func (s *TCPServer) broadcastStatusUpdates() {
 			continue
 		}
 
+		jsonData := make(map[string]interface{})
+		err := json.Unmarshal(jsonBytes, &jsonData)
+		if err != nil {
+			log.Printf("Failed to unmarshal status update: %v", err)
+			continue
+		}
+
+		// Bandaid: Add file writing status to JSON data.
+		jsonData["state"] = {"recording_data": s.isFileReady}
+		jsonBytes, err = json.Marshal(jsonData)
+		if err != nil {
+			log.Printf("Failed to marshal status update: %v", err)
+			continue
+
 		s.mu.Lock()
 		for conn := range s.clients {
 			writer := bufio.NewWriter(conn)
