@@ -361,7 +361,6 @@ class GUIApp:
             
         values = data.get("values", {})
         for valve, state in values.items():
-            print(valve, state)
             valve = valve.lower()
             state = state == 1
             open_btn, close_btn = self.valve_buttons.get(valve, (None, None))

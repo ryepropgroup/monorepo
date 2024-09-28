@@ -1,24 +1,16 @@
 steps:
-  - action: SLEEP
-    duration: 5
-    
-  - action: OPEN
-    valve: IGNITER
-
-  - action: SLEEP
-    duration: 0.5
 
   - action: OPEN
     valve: V30
 
   - action: SLEEP
     duration: 0.15
-
+ 
   - action: OPEN
     valve: V20
 
   - action: SLEEP
-    duration: 4.5
+    duration: 6
 
   - action: CLOSE
     valve: V30
@@ -27,7 +19,7 @@ steps:
     valve: V33
 
   - action: SLEEP
-    duration: 2.5
+    duration: 1
 
   - action: CLOSE
     valve: V20

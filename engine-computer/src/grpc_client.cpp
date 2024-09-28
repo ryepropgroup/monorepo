@@ -30,13 +30,18 @@ void ServiceClient::StartSensorDataStream() {
     spdlog::info("MACH: Started sensor data stream.");
 
     while (true) {
-        std::pair<long, std::unordered_map<std::string, double>> data = sensorQueue.pop();
-        proto::SensorData sensorData;
-        sensorData.set_timestamp(data.first);
-        for (const auto& [key, value] : data.second) {
-            sensorData.mutable_values()->insert({key, static_cast<float>(value)});
+        try {
+            std::pair<long, std::unordered_map<std::string, double>> data = sensorQueue.pop();
+            proto::SensorData sensorData;
+            sensorData.set_timestamp(data.first);
+            for (const auto& [key, value] : data.second) {
+                sensorData.mutable_values()->insert({key, static_cast<float>(value)});
+            }
+            stream->Write(sensorData);
+            // spdlog::info("MACH: Sent sensor data.");
+        } catch (const std::exception& ex) {
+            spdlog::info("MACH: Error sending data: '{}'.", std::string(ex.what()));
         }
-        stream->Write(sensorData);
     }
 }
 

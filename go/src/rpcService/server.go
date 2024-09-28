@@ -158,6 +158,9 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 		// fmt.Println(data)
 		// write Data
 
+		// Forward sensor data to TCP clients
+		s.statusChan <- data
+
 		s.mu.Lock()
 		if !s.isFileReady {
 			s.mu.Unlock()
@@ -168,11 +171,7 @@ func (s *server) SensorDataStream(stream service.EngineComputer_SensorDataStream
 		if err := s.writeData(s.file, data); err != nil {
 			fmt.Println("MACH: Error writing data to file, closing file!")
 			s.closeCSVFile()
-			return err
 		}
-
-		// Forward sensor data to TCP clients
-		s.statusChan <- data
 	}
 }
 

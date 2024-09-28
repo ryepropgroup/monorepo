@@ -28,7 +28,8 @@
                 "CMAKE_CXX_COMPILER": "g++",
                 "CMAKE_C_COMPILER": "gcc",
                 "VCPKG_MANIFEST_DIR": "${sourceDir}/..",
-                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg"
+                "VCPKG_ROOT": "${sourceDir}/../vendor/vcpkg",
+                "x11-backend": "false"
             }
         },
         {
