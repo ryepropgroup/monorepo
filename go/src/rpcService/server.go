@@ -8,7 +8,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 	"sync"
@@ -16,6 +15,7 @@ import (
 
 	service "github.com/ryepropgroup/protoServer/protos"
 	messages "github.com/ryepropgroup/protoServer/protos/messages"
+	"github.com/ryepropgroup/protoServer/state"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -31,6 +31,7 @@ type server struct {
 	isFileReady     bool
 	file            *os.File
 	csvWriter       *csv.Writer
+	state           *state.SharedState
 }
 
 func (s *server) writeData(file *os.File, data *messages.SensorData) error {
@@ -46,39 +47,13 @@ func (s *server) writeData(file *os.File, data *messages.SensorData) error {
 	return nil
 }
 
-func getMostRecentSensorData(prefix string) (string, error) {
-	files, err := filepath.Glob(prefix + "*.csv")
-	if err != nil {
-		return "", err
-	}
-
-	if len(files) == 0 {
-		return "", nil
-	}
-
-	var mostRecentFile string
-	var mostRecentTime time.Time
-
-	for _, file := range files {
-		finfo, err := os.Stat(file)
-		if err != nil {
-			return "", err
-		}
-
-		if mostRecentFile == "" || finfo.ModTime().After(mostRecentTime) {
-			mostRecentFile = file
-			mostRecentTime = finfo.ModTime()
-		}
-	}
-
-	return mostRecentFile, nil
-}
-
-func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) *server {
+func NewServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData,
+	state *state.SharedState) *server {
 	return &server{
 		commandChan: commandChan,
 		statusChan:  statusChan,
 		isFileReady: false,
+		state:       state,
 	}
 }
 
@@ -117,6 +92,9 @@ func (s *server) createCSVFile() error {
 	defer s.mu.Unlock()
 	s.file = file
 	s.isFileReady = true
+	s.state.StateMutex.Lock()
+	s.state.WritingData = true
+	s.state.StateMutex.Unlock()
 	err = s.csvWriter.Write(headers)
 	if err != nil {
 		return err
@@ -133,6 +111,9 @@ func (s *server) closeCSVFile() error {
 	}
 	println("MACH: Closing file:", s.currentFileName)
 	s.isFileReady = false
+	s.state.StateMutex.Lock()
+	s.state.WritingData = true
+	s.state.StateMutex.Unlock()
 	s.currentFileName = ""
 	s.file.Close()
 	return nil
@@ -207,13 +188,14 @@ func (s *server) HandleGoCommand(command string) {
 	}
 }
 
-func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {
+func StartGRPCServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData,
+	state *state.SharedState) {
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	service.RegisterEngineComputerServer(grpcServer, NewServer(commandChan, statusChan))
+	service.RegisterEngineComputerServer(grpcServer, NewServer(commandChan, statusChan, state))
 	reflection.Register(grpcServer)
 
 	log.Println("gRPC server listening on :50051")

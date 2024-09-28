@@ -362,7 +362,7 @@ class GUIApp:
             return
         
         state = data.get("state", {})
-        if "recording_data" in state:
+        if state is not None and "recording_data" in state:
             recording_data = state["recording_data"]
             if recording_data:
                 start_data_btn.config(state="disabled")

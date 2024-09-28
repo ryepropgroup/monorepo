@@ -2,12 +2,14 @@ package tcp
 
 import (
 	"bufio"
+	"encoding/json"
 	"log"
 	"net"
 	"strings"
 	"sync"
 
 	messages "github.com/ryepropgroup/protoServer/protos/messages"
+	"github.com/ryepropgroup/protoServer/state"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -16,13 +18,16 @@ type TCPServer struct {
 	clients     map[net.Conn]struct{}
 	commandChan chan *messages.SequenceCommand
 	statusChan  chan *messages.SensorData
+	state       *state.SharedState
 }
 
-func NewTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) *TCPServer {
+func NewTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData,
+	state *state.SharedState) *TCPServer {
 	server := &TCPServer{
 		clients:     make(map[net.Conn]struct{}),
 		commandChan: commandChan,
 		statusChan:  statusChan,
+		state:       state,
 	}
 	go server.broadcastStatusUpdates()
 	return server
@@ -88,18 +93,23 @@ func (s *TCPServer) broadcastStatusUpdates() {
 		}
 
 		jsonData := make(map[string]interface{})
-		err := json.Unmarshal(jsonBytes, &jsonData)
+		err = json.Unmarshal(jsonBytes, &jsonData)
 		if err != nil {
 			log.Printf("Failed to unmarshal status update: %v", err)
 			continue
 		}
 
 		// Bandaid: Add file writing status to JSON data.
-		jsonData["state"] = {"recording_data": s.isFileReady}
+		recordingData := make(map[string]interface{})
+		s.state.StateMutex.Lock()
+		recordingData["recording_data"] = s.state.WritingData
+		s.state.StateMutex.Unlock()
+		jsonData["state"] = recordingData
 		jsonBytes, err = json.Marshal(jsonData)
 		if err != nil {
-			log.Printf("Failed to marshal status update: %v", err)
+			log.Printf("Failed to re-marshal status update: %v", err)
 			continue
+		}
 
 		s.mu.Lock()
 		for conn := range s.clients {
@@ -117,7 +127,8 @@ func (s *TCPServer) broadcastStatusUpdates() {
 	}
 }
 
-func StartTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData) {
-	server := NewTCPServer(commandChan, statusChan)
+func StartTCPServer(commandChan chan *messages.SequenceCommand, statusChan chan *messages.SensorData,
+	sharedState *state.SharedState) {
+	server := NewTCPServer(commandChan, statusChan, sharedState)
 	server.startListening("0.0.0.0:6000")
 }
