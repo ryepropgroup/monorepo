@@ -73,9 +73,9 @@ progress_bar_positions = {
     "lc": (1159, 34, "horizontal", 1000)
 }
 
-sequences_start_position = (50, 600)
+sequences_start_position = (40, 610)
 sequences_max_width = 300
-sequences = ["reset", "ignition", "ematch_test", "oxidizer", "alternate_oxidizer", "cold_flow"]
+sequences = ["reset", "e-match", "ignition"]
 
 # Scaled button positions
 scaled_button_positions = {key: scale_position(x, y, SCALE_X, SCALE_Y) for key, (x, y) in button_positions.items()}
@@ -143,7 +143,7 @@ class GUIApp:
             relief="flat",
             borderwidth=1,
             padding=5,
-            font=("Helvetica", 10),
+            font=("Helvetica", 15),
             focuscolor="none",
             background="#FF5733",
             foreground="white",
@@ -242,7 +242,7 @@ class GUIApp:
 
         # Place sequence buttons
         self.sequence_buttons = {}
-        scaled_seq_width, scaled_seq_height = scale_size(70, 25, SCALE_X, SCALE_Y)
+        scaled_seq_width, scaled_seq_height = scale_size(112, 50, SCALE_X, SCALE_Y)
         scaled_max_width = int(sequences_max_width * SCALE_X)
         (x_start, y_start) = scale_size(sequences_start_position[0], sequences_start_position[1], SCALE_X, SCALE_Y)
         (x, y) = (x_start, y_start)

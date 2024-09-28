@@ -1,0 +1,7 @@
+steps:
+  - action: SLEEP
+    duration: 5
+
+  - action: OPEN
+    valve: IGNITER
+  
