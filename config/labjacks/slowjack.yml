@@ -7,7 +7,7 @@ valves:
   V31: DIO3
   V20: DIO4
   V32: DIO5
-  # V21: DIO6
+  # V21: DIO6 note: this is manual valve :)
   V33: DIO7
   V35_NO: DIO8
   V36: DIO9

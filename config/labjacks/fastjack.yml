@@ -14,30 +14,8 @@ sensors:
     range: 10
     multiplier: 100
 
-  - name: PINJ
-    port: AIN4
-    range: 10
-    multiplier: 100
-
   - name: LC
     port: AIN0
     negative_channel: AIN1
     multiplier: -200
 
-  - name: INJ1
-    port: AIN10
-    range: 0.1
-    negative_channel: AIN11
-    thermocouple_type: K
-
-  - name: INJ2
-    port: AIN8
-    range: 0.1
-    negative_channel: AIN9
-    thermocouple_type: K
-
-  - name: IGN
-    port: AIN6
-    range: 0.1
-    negative_channel: AIN7
-    thermocouple_type: K

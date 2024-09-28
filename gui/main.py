@@ -57,7 +57,7 @@ button_positions = {
 }
 
 state_positions = {
-    "igniter": (1176, 678),
+    "igniter": (1176, 632),
 }
 
 progress_bar_positions = {
@@ -70,10 +70,6 @@ progress_bar_positions = {
     "p32": (913, 337, "horizontal", 2500),
     "t2": (729, 227, "vertical", 1000),
     "t3": (635, 377, "vertical", 1000),
-    "pinj": (1158, 97, "horizontal", 1000),
-    "inj1": (1164, 500, "horizontal", 1000),
-    "inj2": (1163, 558, "horizontal", 1000),
-    "ign": (1164, 617, "horizontal", 1000),
     "lc": (1159, 34, "horizontal", 1000)
 }
 
@@ -99,7 +95,7 @@ class GUIApp:
         self.root.resizable(False, False)  # Disable window resizing
 
         # Load and display background image
-        self.background_image = Image.open("pid_v3.png")
+        self.background_image = Image.open("pid_v4.png")
         self.background_image = self.background_image.resize(
             (NEW_WINDOW_WIDTH, NEW_WINDOW_HEIGHT), Image.LANCZOS
         )
