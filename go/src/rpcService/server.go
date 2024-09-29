@@ -112,7 +112,7 @@ func (s *server) closeCSVFile() error {
 	println("MACH: Closing file:", s.currentFileName)
 	s.isFileReady = false
 	s.state.StateMutex.Lock()
-	s.state.WritingData = true
+	s.state.WritingData = false
 	s.state.StateMutex.Unlock()
 	s.currentFileName = ""
 	s.file.Close()
